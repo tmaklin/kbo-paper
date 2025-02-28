@@ -1,0 +1,23 @@
+\begin{algorithm}
+\begin{algorithmic}[1]
+\small
+\Require Derandomized Matching statistics vector $DMS_k[1..n]$, significant match threshold $t_p$ from Equation \ref{analytic_noise_treshold}. \textcolor{blue}{We assume the sentinel value $DMS_k[n+1] = \infty$.}
+\Ensure $T$, Tranlated DMS vector.%$DMS_k[1..|Q|] = (d_1, \ldots, d_{|Q|})$.
+\For{$i = 1..n$ \textcolor{blue}{in reverse?}}
+\If{$DMS_k[i] > t_p$ and $0 < DMS_k[i+1] < t_p$ }
+\State $T[i] = {\tt R}$
+\State $T[i+1] = {\tt R}$ 
+\ElsIf{$DMS_k[i] \leq 0$} \Comment{Mismatch}
+    \If{ $DMS_k[i+1] = 1$ and $DMS_k[i-1] > 0$ }
+    \State $T[i] \gets {\tt X}$
+    \Else
+    \State $T[i] \gets {\tt -}$
+    \EndIf
+\Else
+    \State $T[i] = {\tt M}$ \Comment{Match}
+\EndIf
+\EndFor
+\caption{\small Translating the DMS vector} 
+\label{alg:tranlating-DMS}
+\end{algorithmic}
+\end{algorithm}

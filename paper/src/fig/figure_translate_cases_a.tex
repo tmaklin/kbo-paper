@@ -1,0 +1,18 @@
+\begin{tabular}{p{1.2cm} *{29}{p{.09cm}}}
+\setlength{\extrarowheight}{-2pt} % Decrease row height
+ & \multicolumn{6}{c}{\textbf{only matches}} &  &  & \multicolumn{7}{c}{\textbf{single mismatch}} &  &  &  \multicolumn{9}{c}{\textbf{multiple deletions}} & \\
+reference & {\sf A} & {\sf C} & {\sf G} & {\sf C} & {\sf A} & {\sf G}  &  &  & {\sf A} & {\sf C} & {\sf G} & {\sf T} & {\sf C} & {\sf A} & {\sf G}  &  &  & {\sf A} & {\sf C} & {\sf G} & {\sf T} & {\sf T} & {\sf T} & {\sf C} & {\sf A} & {\sf G} &  &  \\
+query & {\sf A} & {\sf C} & {\sf G} & {\sf C} & {\sf A} & {\sf G}  &  &  & {\sf A} & {\sf C} & {\sf G} & {\sf C} & {\sf C} & {\sf A} & {\sf G}  &  &  & {\sf A} & {\sf C} & {\sf G} & {\tt -} & {\tt -} & {\tt -} & {\sf C} & {\sf A} & {\sf G} &  &  \\
+$MS$ & 1 & 2 & 3 & 3 & 3 & 3 &   &  & 1 & 2 & 3 & 1 & 1 & 2 & 3 & & & 1 & 2 & 3 &  & &  & 1 & 2 & 3 &  &  &  \\
+$DMS$ & 1 & 2 & 3 & 3 & 3 & 3 & & & 1 & 2 & 3 & 0 & 1 & 2 & 3 & & & 1 & 2 & 3 & & & & 1 & 2 & 3 &  &  &  \\
+position &  &  &  & $|$ &  &  &  &  & & &  & $|$ &  &  &  &  & & &  & $|$ &  &  &  &  &  &  &  &  &  \\
+output & {\tt M} & {\tt M} & {\tt M} & {\tt M} & {\tt M} & {\tt M} & & & {\tt M} & {\tt M} & {\tt M} & {\tt X} & {\tt M} & {\tt M} & {\tt M} & & & {\tt M} & {\tt M} & {\tt R}  & &  &  & {\tt R} & {\tt M} & {\tt M} &  &  &  \\
+ \\
+ & \multicolumn{7}{c}{\textbf{single insertion}} &  & \multicolumn{8}{c}{\textbf{multiple insertions}} &  & \multicolumn{12}{c}{\textbf{recombination}} \\
+reference & {\sf A} & {\sf C} & {\sf G} & {\tt -} & {\sf C} & {\sf A} & {\sf G} &  & {\sf A} & {\sf C} & {\sf G} & {\tt -} & {\tt -} & {\sf C} & {\sf A} & {\sf G} &  & {\sf A} & {\sf C} & {\sf G} & {\sf T} & {\sf T} & {\sf T} & {\sf C} & {\sf G} & {\sf G} & {\sf C} & {\sf C} & {\sf C} \\
+query & {\sf A} & {\sf C} & {\sf G} & {\sf C} & {\sf C} & {\sf A} & {\sf G} &  & {\sf A} & {\sf C} & {\sf G} & {\sf T} & {\sf T} & {\sf C} & {\sf C} & {\sf A} &  & {\sf A} & {\sf C} & {\sf G} & {\sf C} & {\sf G} & {\sf G} & {\sf T} & {\sf T} & {\sf T} & {\sf C} & {\sf C} & {\sf C} \\
+$MS$ & 1 & 2 & 3 & 3 & 1 & 2 & 3 &  & 1 & 2 & 3 & 0 & 0 & 1 & 1 & 2  &  & 1 & 2 & 3 & 2 & 2 & 3 & 2 & 3 & 3 & 3 & 2 & 3 \\
+$DMS$ & 1 & 2 & 3 & \textbf{0} & 1 & 2 & 3 &  & 1 & 2 & 3 & \makebox[0.3cm]{\small -1} & 0 & \textbf{1} & \textbf{2} & \textbf{3} &  & 1 & 2 & 3 & 1 & 2 & 3 & \textbf{3} & 3 & 3 & \textbf{1} & 2 & 3 \\
+position &  &  &  & $|$ &  &  &  &  &  &  &  & $|$ &  &  &  &  &  &  &  &  &  &  &  &  &  & $|$ &  &  &  \\
+output & {\tt M} & {\tt M} & {\tt M} & {\tt X} & {\tt M} & {\tt M} & {\tt M} &  & {\tt M} & {\tt M} & {\tt M} & {\tt -} & {\tt -} & {\tt M} & {\tt M} & {\tt M} &  & {\tt M} & {\tt M} & {\tt R} & {\tt R} & {\tt M} & {\tt M} & {\tt M} & {\tt M} & {\tt R} & {\tt R} & {\tt M} & {\tt M} \\
+\end{tabular}
