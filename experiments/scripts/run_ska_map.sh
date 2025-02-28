@@ -1,6 +1,4 @@
-#!/usr/bin/env sh
-
-set -uo pipefail
+#!/usr/bin/zsh
 
 ref_fasta=$1
 query_list=$2

@@ -12,10 +12,13 @@ RUN mamba init zsh
 RUN mamba update -y -n base -c conda-forge conda=25.1.1
 RUN mamba env create -y -n kbo_paper -f ~/kbo_paper.yml
 
+RUN apt-get update
+RUN apt-get install time
+
 COPY . /mnt
 
 CMD . ~/.zshrc && \
     mamba activate kbo_paper && \
-    kbo --version && \
-    ska --version && \
-    snippy --version
+    cd /mnt && \
+    chmod +x scripts/*.sh && \
+    sh scripts/run_map_test.sh
