@@ -104,9 +104,7 @@
 %online.}
 
 \abstract{
-Finding high-quality local alignments between a query sequence and sequences contained in large genomic databases is a fundamental problem in computational genomics, at the core of thousands of biological analysis pipelines.
-%Sequence alignment is a fundamental problem in computational genomics. 
-Here, we describe an algorithm for approximate local alignment search based on the longest common suffix lengths of consecutive \emph{k}-mer matches between a target and a query sequence (a '\emph{k}-bounded matching statistic'). To solve this, we use the Spectral Burrows-Wheeler transform (SBWT), a data structure that enables efficient queries without a separate indexing step. Our algorithm is available as the {\sf kbo} Rust package, which provides a command-line interface and a WebAssembly graphical user interface that runs entirely in the browser without a need for server-side processing.}
+Finding high-quality local alignments between a query sequence and sequences contained in large genomic databases is a fundamental problem in computational genomics, at the core of thousands of biological analysis pipelines. Here, we describe an algorithm for approximate local alignment search based on the longest common suffix lengths of consecutive \emph{k}-mer matches between a target and a query sequence (a '\emph{k}-bounded matching statistic'). We compute the \emph{k}-bounded matching statistics using the Spectral Burrows-Wheeler transform (SBWT), a data structure that enables computationally efficient queries and an indexing. Our algorithm is available as a set of three {\sf kbo} Rust packages that provide a command-line interface, a graphical user interface that runs in a browser and does not require server-side processing, and a library that can be accessed by other tools.}
 \keywords{sequence alignment, genomics, Spectral Burrows-Wheeler transform, \emph{k}-bounded matching statistics}
 
 % \boxedtext{
@@ -120,10 +118,7 @@ Here, we describe an algorithm for approximate local alignment search based on t
 
 
 \section{Introduction}
-Genome analysis pipelines often begin with a step where the DNA contained in a 
-genome sequencing run
-%genome assembly 
-is mapped against a database of known reference sequences computationally. Tools implementing these algorithms make use of a number of indexing structures with different trade-offs in efficiency and accuracy and each come with their own strengths and weaknesses. Broadly speaking, the most typical trade-off is between runtime and accuracy depending on whether the algorithm attempts to find the best global match or search for a number of local matches. The latter is usually preferred in tasks involving large amounts of query and reference data.
+Genome analysis pipelines often begin with a step where the DNA contained in a genome sequencing run is mapped against a database of known reference sequences computationally. Tools implementing these algorithms make use of a number of indexing structures with different trade-offs in efficiency and accuracy and each come with their own strengths and weaknesses. Broadly speaking, the most typical trade-off is between runtime and accuracy depending on whether the algorithm attempts to find the best global match or search for a number of local matches. The latter is usually preferred in tasks involving large amounts of query and reference data.
 
 Bacterial genomics is a particular field in which the increasing commercial and public health interest in translational research utilizing pathogen genomics has led to explosive growth in data volumes. From an algorithm design perspective, this growth has steered the field towards methods that preferably scale (sub)linearly in the number of reference sequences, as algorithms developed for careful analysis of a few dozen queries at most choke when applied to orders of magnitudes larger databases. Typically, the extra information contained in the larger volume of reference data is enough to justify some loss of accuracy or theoretical guarantees for optimal results. This has led to the adoption of \emph{k}-mer based approaches that use minimizers or hashing techniques to upscale the throughput when compared to the more traditional approaches built on top of the Burrows-Wheeler transform. \textcolor{red}{TODO: citations, add pseudoalignment}
 
@@ -265,7 +260,7 @@ By noting that $p = 1 - q$, Equation (\ref{max-of-geom-distributions}) simplifie
 \label{max-error-cdf}
 \end{equation}
 
-The CDF in Equation (\ref{max-error-cdf}) can be used to derive a threshold for considering a longest common prefix length value as nonrandom with high probability.
+The CDF in Equation (\ref{max-error-cdf}) can be used to derive a threshold for considering a longest common suffix length value as nonrandom with high probability.
 
 \subsection{\texorpdfstring{Derandomizing $k$-bounded matching statistic vectors}{Derandomizing k-bounded matching statistic vectors}}
 

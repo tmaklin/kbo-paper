@@ -1,0 +1,4 @@
+genomes/nissle/GCF_003546975.1_ASM354697v1_genomic.fna.gz
+genomes/nissle/GCF_019967895.1_ASM1996789v1_genomic.fna.gz
+genomes/nissle/GCF_021559835.1_ASM2155983v1_genomic.fna.gz
+genomes/nissle/GCF_043228065.1_ASM4322806v1_genomic.fna.gz
