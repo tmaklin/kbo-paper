@@ -14,7 +14,7 @@
 %% The list of all files belonging to the 'oup-authoring-template Bundle' is
 %% given in the file `manifest.txt'.
 %%
-%% Template article for OXFORD UNIVERSITY PRESS's document class `oup-authoring-template'
+%% Template article for OXFORD UNIVERSITY PRESS's document class `oup-authoring-template' 
 %% with bibliographic references
 %%
 
@@ -53,7 +53,6 @@
 %\usepackage[noend]{algpseudocode}
 \usepackage{comment}
 
-
 % line numbers
 %\usepackage[mathlines, switch]{lineno}
 %\usepackage[right]{lineno}
@@ -84,19 +83,19 @@
 
 %\subtitle{Subject Section}
 
-\title[Local alignment with kbo]{Local alignment search with \textit{k}-bounded matching statistics}
+\title[Local alignment with kbo]{Local alignment search with \emph{k}-bounded matching statistics}
 
 \author[1,$\ast$]{Tommi M\"{a}klin\ORCID{0000-0003-0970-3514}}
 \author[2]{Jarno N. Alanko\ORCID{0000-0002-8003-9225}}
 \author[2]{Elena Biagi\ORCID{0000-0002-8573-3603}}
 \author[2]{Simon J. Puglisi\ORCID{0000-0001-7668-7636}}
 
-\authormark{M\"{a}klin et al.}
+\authormark{M\"{a}klin, Alanko, Biagi and Puglisi}
 
-\address[1]{\orgdiv{Department of Mathematics and Statistics}, \orgname{University of Helsinki}, \orgaddress{\street{Pietari Kalmin katu 5}, \postcode{00560}, \state{Helsinki}, \country{Finland}}}
+\address[1]{\orgdiv{Department of Biostatistics}, \orgname{University of Oslo}, \orgaddress{\street{Sognsvannsveien 9}, \postcode{0372}, \state{Oslo}, \country{Norway}}}
 \address[2]{\orgdiv{Department of Computer Science}, \orgname{University of Helsinki}, \orgaddress{\street{Pietari Kalmin katu 5}, \postcode{00560}, \state{Helsinki}, \country{Finland}}}
 
-\corresp[$\ast$]{Corresponding author. \href{email:tommi.maklin@helsinki.fi}{tommi.maklin@helsinki.fi}}
+\corresp[$\ast$]{Corresponding author. \href{email:tommi.maklin@helsinki.fi}{tommi.maklin@medisin.uio.no}}
 
 \received{Date}{0}{Year}
 \revised{Date}{0}{Year}
@@ -112,9 +111,8 @@
 %\textbf{Supplementary information:} Supplementary data are available at \textit{Journal Name}
 %online.}
 
-\abstract{Finding high-quality local alignments between a query sequence and sequences contained in a large genomic database is a fundamental problem in computational genomics, at the core of thousands of biological analysis pipelines. Here, we describe an algorithm for approximate local alignment search based on the so-called \emph{k}-bounded matching statistics of the query sequence with respect to an indexed database of sequences. We compute the \emph{k}-bounded matching statistics, which capture the longest common suffix lengths of consecutive \emph{k}-mer matches between query and target sequences, using the Spectral Burrows-Wheeler transform (SBWT), a data structure that enables computationally efficient indexed queries.
-Our methods are available as a set of three {\sf kbo} Rust packages that provide a command-line interface, a graphical user interface that runs in a browser and does not require server-side processing, and a library that can be accessed by other tools.}
-\keywords{sequence alignment, genomics, Spectral Burrows-Wheeler transform, \emph{k}-bounded matching statistics}
+\abstract{Finding high-quality local alignments between a query sequence and sequences contained in a large genomic database is a fundamental problem in computational genomics, at the core of thousands of biological analysis pipelines. Here, we describe a novel algorithm for approximate local alignment search based on the so-called \emph{k}-bounded matching statistics of the query sequence \emph{k}-mers with respect to an indexed database of sequences. We compute the \emph{k}-bounded matching statistics, which capture the longest common suffix lengths of consecutive \emph{k}-mer matches between query and target sequences, using the Spectral Burrows-Wheeler transform (SBWT), a data structure that enables computationally efficient indexed queries. We show that our method is as fast and as accurate as state-of-the-art tools in several bacterial genomics tasks. Our method is available as a set of three {\sf kbo} Rust packages that provide a command-line interface, a graphical user interface that runs in a browser without server-side processing, and a core library that can be accessed by other tools.}
+\keywords{sequence alignment, genomics, spectral Burrows-Wheeler transform, \emph{k}-bounded matching statistics, \emph{k}-mer matching}
 
 % \boxedtext{
 % \begin{itemize}
@@ -127,34 +125,26 @@ Our methods are available as a set of three {\sf kbo} Rust packages that provide
 
 
 \section{Introduction}
-Genome analysis pipelines often begin with a step in which the DNA sequences contained in a 
-genome sequencing run
-are mapped against a database of known reference sequences. Computational tools implementing these mapping algorithms make use of one of a variety of indexing structures each with different trade-offs in efficiency and accuracy and with their own strengths and weaknesses. Broadly speaking, the most typical trade-off is between runtime and accuracy depending on whether the algorithm attempts to find the best global match or search for a number of local matches. The latter is usually preferred in tasks involving large amounts of query and reference data.
+Genome analysis pipelines typically begin with aligning DNA contained in sequencing reads or assemblies against a known reference sequence. The resulting alignment describes compatibility between the two sequences and is the basis for many downstream analyses. In tasks where accuracy is essential and resources plentiful, the gold standard for alignment is to map short-read sequencing data against a short+long read hybrid-assembled reference genome \cite{wick2023assembling}. However, particularly in microbial genomics, the largest current collections contain data from hundreds of thousands to millions of samples \cite{parks2020complete,richardson2023mgnify,hunt2024allthebacteria}, rendering large-scale storage, distribution, and processing of sequencing read sets domain of only the largest institutions. This has led to adopting algorithms that perform essential tasks using only assembly data in favour of sequencing reads, as specialized tools compress assembled genomes efficiently \cite{deorowicz2023agc,bvrinda2024efficient} and tools operating on assemblies require less computational resources to analyse.
 
-Bacterial genomics is a field in which the increasing commercial and public health interest in translational research utilizing pathogen genomics has led to particularly explosive growth in data volumes. From an algorithm design perspective, this growth has steered the field towards indexes whose size scales preferably sublinearly in the total size of the reference sequences, \textcolor{red}{as algorithms developed for careful analysis of a few dozen queries at most choke when applied to orders of magnitudes larger databases. Typically, the extra information contained in the larger volume of reference data is enough to justify some loss of accuracy or theoretical guarantees for optimal results}. This has led to the adoption of \emph{k}-mer based approaches that use minimizers or hashing techniques to upscale the throughput when compared to the more traditional approaches built on top of the Burrows-Wheeler transform. \textcolor{red}{TODO: citations, add pseudoalignment}
+Computational tools for assembly comparison typically report the coordinates of aligned segments in a query relative to some reference, infer a consensus sequence consisting of nucleotide characters and gaps, and find structural variation in the query such as insertions and deletions. Accuracy in these three tasks highly depends on quality of the input sequences \cite{wick2025reads}, but for high-quality data the results from different tools tend to agree and their development has focused on faster or more specialized pipelines and new algorithms. In this paper we devise and implement one such algorithm for solving the aforementioned comparison tasks by pairing \emph{k}-mer matching with computation of the longest common suffix length of each match, a \emph{k}-bounded matching statistic.
 
-In this paper, we focus on the task of finding local alignment sections within a query sequence in a reference database containing either a small number of bacterial genomes or a larger number of gene sequences. In practice, these represent the two common bacterial genomics use cases of 1) producing reference-based alignments by locally aligning segments from a query against the reference and formatting the output as a string of nucleotide characters and gaps, and 2) comparing the identity and coverage of some genes of interest in a query against the same genes in the reference. For the first task, the most widely used tools are Snippy~\cite{seemann2015snippy}, which uses the Burrows-Wheeler aligner BWA-MEM \cite{li2013aligning} and thus guarantees some locality in the results, and split \emph{k}-mer analysis SKA \cite{derelle2024seamless, harris2018SKA} which discards locality entirely in favour of rapid queries implemented using split \emph{k}-mer hashing. The second approach is typically solved with locality preserving methods such as BWA-MEM, BLAST, or minimap2~\cite{bty191} \textcolor{red}{TODO citations / other relevant methods?}. Our approach, called {\sf kbo}\footnote{\url{https://github.com/tmaklin/kbo}}, is competitive in both tasks 1 and 2.
+Our approach, called {\sf kbo}, is built on top of the Spectral Burrows-Wheeler transform (SBWT) data structure that allows rapid \emph{k}-mer lookups in compact space \cite{alanko2023small}. Recently, these lookups were extended to computing \emph{k}-bounded matching statistics by adding a longest common suffix array to the SBWT \cite{alanko2023longest,alanko2024finimizers}. We show that combining SBWT lookups with the \emph{k}-bounded matching statistics information enables transforming otherwise locality-discarding SBWT \emph{k}-mer matching into local alignments through a suffix match derandomisation procedure. As a whole, our algorithm represents a significant advance in \emph{k}-mer matching methods, which have previously discarded coordinate information and locality in favour of scalable lookups \cite{alanko2023themisto,fan2024fulgor}.
 
-{\sf kbo} is built on top of the Spectral Burrows-Wheeler transform (SBWT), which allows rapid $k$-mer lookup in compact space~\cite{alanko2023small}. Recently, it was shown that by adding longest common suffix information to the SBWT~\cite{alanko2023longest}, it is possible to quickly compute the length of the longest matching suffix of each $k$–mer in the query against the indexed $k$-mers \cite{alanko2024finimizers}. We show that these \emph{$k$-bounded matching statistics} enable transforming the otherwise locality-discarding SBWT \emph{k}-mer matching into an output format that preserves locality of consecutive \emph{k}-mers in the query with a high probability \textcolor{red}{TODO this should be proven or otherwise shown in the manuscript}. 
-
-The main advantage of {\sf kbo} lies in its effective use of the SBWT data structure to perform comparisons in a rapid and parallelisable manner. As an example, pairwise comparison of two 5Mb bacterial genomes (task 1) takes 1-2 seconds using a consumer-grade laptop and looking up a dozen genes of interest (task 2) less than a second. Neither of the tasks requires a separate indexing step, as SBWT construction is efficient enough to embed it in the query steps. Additionally, {\sf kbo} is available as both a command-line interface and a WebAssembly distributable which enables running queries in the browser without sending any data to a remote server and without performing a local install of the tool.
-
-\subsection{Overview}
-
-Our tool, {\sf kbo}, implements two main modes of operation: "find" matches the \emph{k}-mers in a query sequence with the reference, and reports the local alignment segments found within the reference. Find is useful for problems that can be solved with BLAST. The second mode, "map", maps the query sequence against a reference sequence, and reports the nucleotide sequence of the alignment relative to the reference. Map solves the same problem as Snippy~\cite{seemann2015snippy} and the map command in SKA \cite{derelle2024seamless}. A command-line interface to these two commands is provided by the kbo-cli Rust package \footnote{\url{https://github.com/tmaklin/kbo-cli}} and the WebAssembly graphical user interface in the kbo-gui package \footnote{\url{https://github.com/tmaklin/kbo-gui}}. An overview of the operation is provided in Fig. \ref{fig1} and in the following paragraphs.
-\begin{figure*}[!t]%
-\centering
-{\includesvg{Figure_kbo_overview.svg}}
-\caption{\textbf{Draft} Overview of the {\sf kbo} algorithms.}\label{fig1}
-\end{figure*}
-
-Under the hood, kbo-cli and kbo-gui call the functions provided by the kbo core library. This library is responsible for calling the sbwt Rust crate\footnote{\url{https://docs.rs/sbwt}} to perform both indexing of the reference (in kbo find) or the query sequence (kbo map) and query the constructed index with the \emph{k}-mers from the query (in kbo find) or the reference (in kbo map). The query step consists of extracting the \emph{k}-mer matches and querying the longest common suffix (LCS) array for the matching statistics (MS) as described in a previous publication \cite{alanko2024finimizers}.
-
-The resulting MS vector is fed to a \emph{derandomization} algorithm introduced in this paper. This algorithm takes the MS vector and zeroes values that have a high probability to result from a random longest common suffix match. Using the derandomized values, {\sf kbo} can then translate the resulting derandomized MS vector into a character string representing various levels of compatibility between the query and the reference. The character representation may further be refined to resolve single nucleotide polymorphisms (SNPs) in the query, as the plain derandomized MS vector does not contain enough information to distinguish between a SNP and a single base insertion. In kbo map, the refinement step is required, while in kbo find, the derandomized MS vector alone is enough to determine the output values. The next sections will cover each step in detail and introduce the derandomization, translation, and refinement algorithms.
-
-%\subsection{\textit{k}-mer matching with the spectral Burrows-Wheeler transform}\label{kmermatching}
+Beyond algorithmic novelty, the main advantage of {\sf kbo} lies in its effective use of the SBWT data structure to perform comparisons in a rapid and parallelisable manner. We demonstrate that our implementation either matches or beats state-of-the-art methods in both accuracy and speed while retaining reasonable space requirements. Additionally, {\sf kbo} requires no temporary disk space, making it ideal for massively parallel analyses. The low computational requirements enable a fully in-browser implementation of our algorithms, greatly improving accessibility for non-experts and researchers with limited technical proficiency or resources. To our knowledge, {\sf kbo} is the first fully-featured sequence aligner that can run entirely in the browser while also providing an efficient command-line client and a stable core library for use in other programs. We expect our tools to facilitate further democratization of bioinformatics and find adoption in fields processing large assembly collections.
 
 \section{Methods}\label{methods}
+\subsection{Overview}
+
+Our tool, {\sf kbo}, implements three main algorithms that all take advantage of \emph{k}-mer matching plus \emph{k}-bounded matching statistics. The first algorithm, \textit{call}, is a specialized variant calling algorithm that reports insertions, deletions, and single-nucleotide polymorphisms in a query. Call is useful for producing variant calling files that form the basis of genome-wide association studies. Our second algorithm, \textit{find}, compares a query and a reference sequence and reports local alignment segments in the query. Find is particularly useful for finding shorter sequences such as genes in a large number of queries. The last algorithm, \textit{map}, performs reference-based alignment and produces a consensus sequence relative to the reference. The main use for map is in producing such alignments for many queries in a fast and highly parallelisable manner. The following paragraphs will give a detailed overview of the theory required to implement each algorithm.
+
+\begin{figure*}[b]
+    \centering
+    \includegraphics[scale=0.6]{fig/SBWT_search_LCS.drawio.pdf}
+    \caption{Illustration of {\em ExtendRight} (resulting in blue intervals) and {\em ContractLeft} operations (resulting in green intervals) to match the string {\sf GTATG} with $k=4$ against a reference $\mathcal{S}= \{${\sf TGTTTG}, {\sf TTGCTAT}, {\sf ACGTAGTATAT}, {\sf TGTAAA}$\}$. This match produces the matching statistics vector $MS=\{ 1, 2, 3, 4, 2 \}$ and derandomizes to the vector $DMS=\{ 1, 2, 3, 4, 0 \}$ if the threshold used is $t = 2$.
+    }
+    \label{fig:sbwt-search}
+\end{figure*}
 
 \subsection{Preliminaries}\label{preliminaries}
 
@@ -196,7 +186,6 @@ The $LCS$ array is an array of length $|R^+|$ s.t. $LCS[1] = 0$, and for $i > 1$
  In the above definition, we consider the empty string as a common suffix of any two $k$-mers, so that the longest common suffix is well-defined for any pair of $k$-mers.
 An example of a $LCS$ array is shown in Figure~\ref{fig:sbwt-search}.
 
-
 When the $k$-mers in $R^+$ are sorted colexicographically, the subset of $k$-mers in $R^+$ that share a string $\alpha$ as a suffix are next to each other. This is called the \emph{colexicographic range} of $\alpha$. The colexicographic range of a string $\alpha$ that is \emph{longer} than $k$ is defined as the range of $k$-mers in the sorted list of $R^+$ that have the last $k$ characters of $\alpha$ as a suffix. The SBWT provides two operations on colexicographic ranges $[\ell, r]$ of any string $\alpha$: 
 
 \begin{itemize}
@@ -206,21 +195,6 @@ When the $k$-mers in $R^+$ are sorted colexicographically, the subset of $k$-mer
 \end{itemize}
 
 See Alanko et al. \cite{alanko2024finimizers} for details on how to implement these operations using the SBWT. Figure~\ref{fig:sbwt-search} provides an illustration of both operations.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1.0\linewidth]{fig/derandomized_MS.drawio.pdf}
-    \caption{Derandomizing the MS vector. The y-axis is the length of a match ending at a given position in the query (the x-axis). The dashed horizontal line is the noise threshold. The dotted line shows the derandomized values. }
-    \label{fig:derandomization}
-\end{figure}
-
-\begin{figure*}
-    \centering
-    \includegraphics[scale=0.6]{fig/SBWT_search_LCS.drawio.pdf}
-    \caption{Illustration of {\em ExtendRight} (resulting in blue intervals) and {\em ContractLeft} operations (resulting in green intervals) to match the string {\sf GTATG} with $k=4$ against a reference $\mathcal{S}= \{${\sf TGTTTG}, {\sf TTGCTAT}, {\sf ACGTAGTATAT}, {\sf TGTAAA}$\}$, $MS=\{ 1, 2, 3, 4, 2 \}$.\textcolor{red}{TODO:write derandomized MS, $DMS=\{1,2,3,4,2\}$? {\tt MMMRR}}}
-    %\caption{ Illustration of three {\em ExtendRight} (resulting in blue intervals) and three {\em ContractLeft} operations (resulting in green intervals). GTATGTT\textcolor{red}{[TODO: maybe make a new example] }}
-    \label{fig:sbwt-search}
-\end{figure*}
 
 %\subsection{\texorpdfstring{$k$-bounded matching statistics}{k-bounded matching statistics}}
 
@@ -292,6 +266,13 @@ For example, for a small genome with $n = 10^6$ distinct $k$-mers,  nucleotide m
 
 \subsection{\texorpdfstring{Derandomizing $k$-bounded matching statistic vectors}{Derandomizing k-bounded matching statistic vectors}}
 
+
+\begin{figure}[b]
+    \centering
+    \includegraphics[width=1.0\linewidth]{fig/derandomized_MS.drawio.pdf}
+    \caption{Derandomizing the MS vector. The y-axis is the length of a match ending at a given position in the query (the x-axis). The dashed horizontal line is the noise threshold. The dotted line shows the derandomized values. }
+    \label{fig:derandomization}
+\end{figure}
 Using the threshold $t_p$ from Equation (\ref{analytic_noise_treshold}), we \emph{derandomize} $MS_k$ by replacing match lengths below the threshold $t_p$ with values derived from nearby values. A key fact to understand about the $MS_k$ vector is that always $MS[i]$ at most $MS[i-1]+1$. For typical real data, the general shape of the $MS_k$ vector is a mountainscape with slow climbs and sharp falls, interspersed with with noisy valleys below the significant match threshold (see Figure \ref{fig:derandomization}). The idea of derandomization is to extrapolate the climbs backward to eliminate the noisy segments. The process is detailed in Algorithm \ref{alg:derandomized-MS}. After this processing, we can easily read off the lengths of gaps in the matches, as shown in the next section.
 
 \begin{comment}
@@ -307,11 +288,12 @@ Using the threshold $t_p$ from Equation (\ref{analytic_noise_treshold}), we \emp
 
 
 
-\begin{algorithm}
+\begin{algorithm}[t]
 \begin{algorithmic}[1]
 \small
 \Require Matching statistics vector $MS_k[1..n]$, significant match threshold $t_p$ from Equation \ref{analytic_noise_treshold}.
 \Ensure Derandomized MS vector $DMS_k[1..n] = (d_1, \ldots, d_{n})$.
+\State $DMS_k \leftarrow $ Array of length $n$ initialized to zeros
 \State $DMS_k[n] \gets MS_k[n]$
 \For{$i = 1..n-1$ in reverse order}
 \If{$MS_k[i] = k$}
@@ -322,53 +304,20 @@ Using the threshold $t_p$ from Equation (\ref{analytic_noise_treshold}), we \emp
     \State $DMS_k[i] \gets DMS_k[i+1]-1$
 \EndIf
 \EndFor
+%\State \Return $DMS$
 \caption{\small Derandomizing the MS vector} 
 \label{alg:derandomized-MS}
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Translating derandomized matching statistics into alignment events}
+ 
 
-\begin{figure*}[!b]%
-\centering
-{\includesvg{Figure_translate_cases}}
-\caption{\textbf{Draft Applying the translation procedure to a derandomized matching statistics vector.}. Panel a) shows the result of translating a single position at a time. Panel b) shows the result of translating an entire vector with multiple cases. Examples in both panels assume \emph{k}-mer size 3 and derandomization threshold 2.\textcolor{blue}{Would it be stupid to add MS here? (Elena)} \textcolor{red}{I think it's a good idea (Jarno)} \textcolor{blue}{I added a new figure below (Elena)} }\label{fig2}
-\end{figure*}
-
-\begin{figure*}[h!]
-\small
-    \centering
-    
-    % Table (a)
-    \subfigure[\small Translating a single position at a time]{%
-        \input{fig/figure_translate_cases_a}
-    }
-    \vspace{.5em} % Space between tables
-    
-    % Table (b)
-    \subfigure[\small Translating an entire vector with multiple cases.]{%
-        \input{fig/figure_translate_cases_b}
-    }
-    \caption{Illustration of the results of applying the translation procedure to a derandomized matching statistics vector. Examples in both panels assume \emph{k}-mer size 3 and derandomization threshold $t=2$. \textcolor{blue}{Elena: I would remove the row "position"}}
-    \label{fig:translate_cases}
-\end{figure*}
 
 %Zeros in $d$ mark the first base after end of a match, and negative values denote 0-indexed distance from the last matching base. The key to this simple procedure is reading the matching statistics vector $MS$ in reverse and using the threshold $t_p$ to determine when a new match begins after a gap.
 
 
 The derandomized MS vector can be translated into a character representation of the compatibility between the query and a reference sequence. For example, a single nucleotide substitution or insertion at position $i$ will show up as run from 0 to $k$ in $DMS_k[i..i+k]$. These can be distinguished from deletions and recombinations, which exhibit different kinds of characteristic patterns. All the possible cases are displayed in Figure \ref{fig:translate_cases}a. We represent character compatibility events using the following set of symbols:
-
-\begin{enumerate}
-\item[\textbf{$\tt{M}$}]: Match between query and reference.
-\item[\textbf{-}]: Bases in the query that are not found in the reference.
-\item[\textbf{$\tt{X}$}]: Single base mismatch \textit{or} single base insertion into the query.
-\item[\textbf{$\tt{R}$}]: Two consecutive ${\tt R}$s signify a discontinuity in the alignment. The right ${\tt R}$ is at the start of a $k$-mer that is not adjacent to the last character in the $k$-mer corresponding to the left ${\tt R}$. This implies either a deletion of unknown length in the query, or an insertion of $k$-mers from elsewhere in the reference into the query.
-\end{enumerate}
-Algorithm \ref{alg:tranlating-DMS} shows how these events can be detected with a single backward pass over the $DMS_k$ array. Figure \ref{fig:translate_cases}b shows an example where all the cases occur in a single query. Note how this example illustrates that the procedure is not able to distinguish between a single base insertion and a single base substitution. This problem can be resolved by adding a \textit{refinement} step to our translation, which resolves this conundrum by using the nucleotide sequence of the reference.
-
-
-%Applying the translation procedure over a more complex derandomized MS vector with multiple events is illustrated in Figure \ref{fig:translate_cases}b. 
-%The translation $T$ for each value in the derandomized MS vector depends on the neighboring values and the threshold $t_p$. We use the following algorithm to determine the character representation of the events.
 
 \input{translatingDMS}
 \begin{comment}
@@ -384,90 +333,156 @@ The translation $t_n$ for each value in the derandomized MS vector $d_n$ depends
 \end{enumerate}
 \end{comment}
 
+\begin{enumerate}
+\item[\textbf{$\tt{M}$}]: Match between query and reference.
+\item[\textbf{-}]: Bases in the query that are not found in the reference.
+\item[\textbf{$\tt{X}$}]: Single base mismatch \textit{or} single base insertion into the query.
+\item[\textbf{$\tt{R}$}]: Two consecutive ${\tt R}$s signify a discontinuity in the alignment. The right ${\tt R}$ is at the start of a $k$-mer that is not adjacent to the last character in the $k$-mer corresponding to the left ${\tt R}$. This implies either a deletion of unknown length in the query, or an insertion of $k$-mers from elsewhere in the reference into the query.
+\end{enumerate}
+Algorithm \ref{alg:tranlating-DMS} shows how these events can be detected with a single backward pass over the $DMS_k$ array. Figure \ref{fig:translate_cases}b shows an example where all the cases occur in a single query. Note how this example illustrates that the procedure is not able to distinguish between a single base insertion and a single base substitution. This problem can be resolved by adding a \textit{refinement} step to our translation, which resolves this conundrum by using the nucleotide sequence of the reference.
 
+\subsection{Filling gaps in the translated alignment}
+Translated output from {\sf kbo} may contain gaps that are falsely marked as so. These are primarily caused by multiple changes occurring within an interval shorter than the \emph{k}-mer size, which leads the derandomization algorithm to mark the entire interval as a gap. Gaps that can be overlapped by a single \emph{k}-mer resolve with use of the variant calling, but if a single \emph{k}-mer is not enough a dedicated gap filling procedure is needed.
 
+We start by defining the \textit{nearest unique context} of a gap. The nearest unique context $\nu$ is the colexicographic range $\left[l,r\right]$ with size $r - l = 0$ of a \emph{k}-mer $k_\nu$ whose suffix matches the characters to right of the gap. We require at least the derandomization threshold $t_p$ long suffix matches to avoid spurious \emph{k}-mers. This implies that $k_\nu$ ends at most $k - t_p$ characters to right of the gap. The first step in our gap filling algorithm is to search for the nearest unique context and, if it does not exist, the gap is considered unfillable.
 
+If $k_\nu$ exists, we search the LCS array for left extensions $\lambda_i$ of $k_\nu$ until the prefix of $\lambda_i$ matches the sequence left of the gap by $t_p$ characters. At each left extension, the concatenated sequence $\alpha_i = \left[\lambda_i, k_\nu\right]$ must have a colexicographic range with size $0$. Note that $k_\nu$ may already fulfil these criteria if the gap is shorter than $k - 2*t$, in which case $\lambda_\nu$ is an empty sequence.
 
-%\textcolor{red}{Here we would also like to refer the reader to the documentation for the "translate\_ms\_vec" and "translate\_ms\_val" functions in the translate module \footnote{https://docs.rs/kbo} for the actual implementation of these algorithms.}
+\begin{figure}[t]
+    \centering
+    
+    {\includesvg[width=1.0\linewidth]{fig/kbo_translate_cases.svg}}
+    \caption{Illustration of the results of applying the translation procedure to a derandomized matching statistics vector. Examples in both panels assume \emph{k}-mer size 3 and derandomization threshold $t=2$. MS is short for matching statistics and DMS for derandomized matching statistics.}
+    \label{fig:translate_cases}
+\end{figure}
 
-\subsection{Refining the translation to resolve SNPs versus insertions}
-\textcolor{red}{TODO this needs a description of how the base is deemed as a SNP (substitution?) or an insertion in the first place. Written below but to be checked...} \textcolor{blue}{The pseudocode in Algorithm \ref{alg:tranlating-DMS} now defines this}.
-In kbo's output {\tt X} may represent either a single base substitution or a single base insertion.
-A substitution indicates a mismatch between the base in the query and the base in the reference. In contrast, an insertion signifies that a single base is present in the query but absent in the reference; consequently, in the alignment, this base in the query aligns with a gap in the reference.
-  
-We can resolve the problem of single nucleotide substitution versus an insertion by using the LCS array \cite{alanko2023longest}. Briefly, this data structure allows retrieving the neighboring bases from the SBWT (in the colexicographical ordering) and provides an educated guess for the value of the base marked with an {\tt X}. The SBWT by itself does not store the original sequence, but the LCS array allows us to derive a workaround.
+After finding a valid left extension $\lambda_\nu$, we determine whether to fill the gap with $\beta_\nu = \left[\alpha_{\nu,t_p + 1},\dots,\alpha_{\nu,N - t_p - 1}\right]$, where $N$ is the total size of $\alpha_\nu$, by applying a series of checks. The first check is that the size of $\beta_\nu$ must equal the size of the gap, meaning there are no insertions or deletions in $\beta_\nu$. The second check is that $\beta_\nu$ must meet at least one of the following three requirements: 1) $\lambda_\nu$ is an empty sequence, 2) all characters in $\beta_\nu$ except $\alpha_{t_p + 1}$ and $\alpha_{N - t_p - 1}$ match the reference, or 3) the probability of generating all consecutive matches in $\beta_\nu$ is less than $t_p$. We compute 3) using products of the CDF of maximum match lengths (Definition \ref{max-of-geom-distributions}). If the checks pass, we consider $\beta_\nu$ valid and fill the gap with its characters.
 
-We resolve the {\tt X}s by checking whether the \emph{k}-mer whose first character overlaps the {\tt X} has a matching statistic of $k - 1$ and, if it does, traversing the colexicographical ordering until we find the \emph{k}-mer where the position marked by {\tt X} is the middle base (a split \emph{k}-mer centered on {\tt X} \cite{derelle2024seamless}). We use the middle base from this \emph{k}-mer to replace the {\tt X} in the translation. If the matching statistic is less than $k - 1$, the character is checked from the \emph{k}-mer that is $(t_p + 1)/2$ characters away from the {\tt X} to account for the possibility of a random match.
+\subsection{Variant calling using matching statistics}
+\textcolor{red}{TODO write}
 
-Although the colexicographical ordering is not guaranteed to return the exact \emph{k}-mer that is present in the query at this position, in practice the approach selects the same nucleotide as Snippy and SKA with a high probability (\textcolor{red}{TODO add figure from a simple example}).
+\subsection{Implementation}
+We provide {\sf kbo} in the form of three software packages written fully in the Rust programming language: kbo\footnote{\url{https://github.com/tmaklin/kbo}} contains the implementations of our algorithms and is intended for usage in other programs, kbo-cli\footnote{\url{https://github.com/tmaklin/kbo-cli}} provides a command-line client, and kbo-gui\footnote{\url{https://github.com/tmaklin/kbo-gui}} is a Rust-to-WebAssembly graphical user interface that runs in a browser with no server-side processing or data transfer. Both the command-line and graphical user interfaces provide full access to all features of {\sf kbo}. An overview of the operation of {\sf kbo} is given in Figure \ref{fig:kbo-overview}
+
+\begin{figure*}[!t]%
+\centering
+{\includesvg{fig/kbo_overview.svg}}
+\caption{Overview of the three main algorithms in {\sf kbo}: find, call, and map. The figure shows which parts of the sbwt and {\sf kbo} core libraries each algorithm makes use of and illustrates example inputs and outputs to and from the user interface implementations. }\label{fig:kbo-overview}
+\end{figure*}
+
 
 \section{Use cases}
+We demonstrate {\sf kbo} on three common bacterial genomics tasks and present results for both accuracy and compute resource usage. These demonstrations were conducted using the command-line interface (kbo-cli v0.2.0) running on a 2021 Dell XPS 13 laptop with an Intel i7-1165G7 4-core processor and 16GB RAM. All tools were ran with the default parameters unless otherwise stated. A Docker container that reproduces the results is available from \textcolor{red}{TODO Add the container somewhere.}.
 
-\subsection{Reference-based alignment of query assemblies with 'kbo map'}
+\subsection{Variant calling with 'kbo call'}
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{fig/variant_calling_resource_consumption.pdf}
+    \caption{Resource consumption in variant calling for the four tested methods kbo, MUMmer4, Shred, and SKA. Panel a) shows a boxplot of time taken to process each sample. Panel b) the peak memory usage during each run, and Panel c) the temporary disk requirement. The thick lines denote the median and the whiskers the 25\% and 75\% quantiles.}
+    \label{fig:vc-resource-usage}
+\end{figure}
 
-Our algorithm can perform reference-based alignment, where the nucleotides in a query sequence are mapped relative to a reference sequence, by applying the full 'Map' pipeline from Fig. \ref{fig1}. When the pipeline is applied to multiple closely related query sequences against the same reference, this results in a "SNP alignment" that approximates multiple sequence alignment required in, for example, phylogenetic analyses but is much faster to obtain. To test 'kbo map' in a realistic use case, we benchmarked the runtime of 'kbo map' on obtaining SNP alignments and compared the results to two widely used bacterial genomics tools, ska2~\cite{derelle2024seamless, harris2018SKA} and snippy~\cite{seemann2015snippy}.
+\begin{table}[]
+\begin{tabular}{lrrrrr}
+Method & TP  & FN  & FP   & Sensitivity & Precision \\
+\hline
+kbo    & 782 & 0   & 1630 & 1.00    & 0.32  \\
+MUMmer4 & 782 & 0   & 4669 & 1.00    & 0.14  \\
+shred  & 782 & 0   & 4001 & 1.00    & 0.16  \\
+SKA    & 374 & 408 & 7431 & 0.48    & 0.05
+\end{tabular}
+\caption{Accuracy in resolving single-nucleotide substitutions across four tested methods. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.}
+\label{vc-snps}
+\end{table}
+\begin{table}[]
+\begin{tabular}{lrrrrr}
+Method & TP & FN & FP  & Sensitivity & Precision \\
+\hline
+kbo    & 68 & 0  & 190 & 1.00    & 0.26  \\
+MUMmer4 & 68 & 0  & 719 & 1.00    & 0.09  \\
+shred  & 68 & 0  & 699 & 1.00    & 0.09  
+\end{tabular}
+\caption{Accuracy in resolving insertions and deletions across three tested methods. SKA does not resolve insertions and deletions so it is omitted. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.}
+\label{vc-indels}
+\end{table}
+
+We benchmarked the variant calling algorithm in {\sf kbo} by reproducing an experiment conducted in an earlier study \cite{wick2025reads}. Briefly, in this study seven very closely related (less than 10 nucleotides difference) \textit{Staphylococcus aureus} assemblies were created with different assemblers and sequencing technologies, including short-read and long-read sequencing of the same isolates. The study compared variant calls obtained from assemblies only against the gold standard read-based calls on a hybrid-assembled 2.9Mb long reference genome. We compare the variant calls from {\sf kbo} against calls generated using tools based on either genome alignment (MUMmer4\cite{marccais2018mummer4}), a pipeline converting the assemblies into pseudo reads using wgsim, aligning them against the reference with bwa-mem \cite{li2013aligning}, and calling the variants with freebayes \cite{garrison2012haplotype} (called shred, a similar pipeline is implemented in Snippy \cite{seemann2015snippy}), and a split \emph{k}-mer based approach (SKA \cite{derelle2024seamless}).
+
+Our results (Tables \ref{vc-snps} and \ref{vc-indels}) show that like MUMmer4 and shred, {\sf kbo} achieves perfect sensitivity and successfully calls all SNPs and INDELs that are present in the gold standard. When measured by precision, {\sf kbo} is markedly better at reporting fewer false positives, achieving two times better precision in SNP calling and three times better in resolving INDELs. Supplementary figure (supplement\_vc\_parameter\_effects.pdf) shows how the results from {\sf kbo} change when the \emph{k}-mer size and the maximum error probability parameters are varied.
+
+By resource usage {\sf kbo} is the fastest method, taking an average of 1.6s seconds to process a single pairwise comparison (Fig. \ref{fig:vc-resource-usage}a). The peak memory usage of {\sf kbo} is comparable to the other \emph{k}-mer based method, SKA, requiring 401MB per comparison on average (Fig. \ref{fig:vc-resource-usage}b). Since {\sf kbo} performs all operations fully in-memory, the tool is the only one of the four tested that requires no temporary disk space (Fig. \ref{fig:vc-resource-usage}c). Overall the resource usage of {\sf kbo} is mainly determined by the \emph{k}-mer size parameter and we have included a supplementary figure showing how the runtime and memory usage change with different values of \emph{k} (variant\_calling\_kmer\_size\_effect.pdf).
+
+\subsection{Gene finding with 'kbo find'}
+The 'find' command in {\sf kbo} can be used to find the coordinates of some reference sequence(s) of interest in a query. In this example we demonstrate an use case for 'find' in locating 19 genes (total 50 000 bases long) belonging to the pks pathogenicity island in 1 999 \textit{E. coli} chromosome sequences (avg. length 4.63Mb) from the Norwegian surveillance programme on resistant microbes (NORM) collection \cite{gladstone2021emergence, arredondo2023escherichia}.
+
+The ground truth was generated by annotating the 1 999 assemblies with bakta \cite{schwengers2021bakta}. Reference sequences for the pks island genes were extracted from the \textit{E. coli} IHE3034 strain (\href{https://www.ebi.ac.uk/ena/browser/view/GCA_000025745.1}{ASM2574v1A}) \cite{moriel2010identification}. Assemblies were processed in four parallel processes with a single thread each using the GNU parallel tool \cite{tange_2024_13826092}, taking a total of 509 seconds (0.25s per assembly) and 195MB peak memory. For comparison, running the same analysis with blast+ \cite{camacho2009blast+} takes 364 seconds (0.18s per assembly) and 189MB peak memory. Our tool was able to identify the exact same regions as bakta in 894 out of 934 assemblies. In the remaining 39 assemblies, the average difference between alignments reported by {\sf kbo} and the gene annotations from bakta was 5 bases out of the total 50 000.
+
+The default mode for 'find' does not report the name of the reference sequence (gene or contig for example) that an alignment was found in due to limitations the matching statistics algorithm. If the names are required, we implement a detailed mode that indexes each sequence separately, overcoming this problem. The detailed mode is significantly slower, taking a total of 6 540 seconds (3.3s per assembly) and 1417MB peak memory to run the same experiment. We leave a more efficient algorithm to future work.
+
+\subsection{Reference-based alignment with 'kbo map'}
+
+The final operation supported by {\sf kbo} is reference-based alignment of two assemblies, where the nucleotides in a query sequence are mapped relative to a reference sequence. The results of this procedure are useful in, for example, phylogenetic inference when the original sequencing reads are not available or the number of queries is prohibitively large for storing the read data. We created a benchmark for 'kbo map' by extracting the short-read sequencing data and 112 fully assembled chromosome sequences from \textit{E. coli} sequence type (ST) ST131 isolates in the previously mentioned NORM collection \cite{gladstone2021emergence,arredondo2023escherichia}. The ground truth was inferred by selecting a random hybrid assembly as the reference, aligning paired-end short-read sequencing reads from the other isolates against it using bwa-mem2 \cite{vasimuddin2019efficient}, and using samtools \cite{10.1093/gigascience/giab008} to convert the alignment into a consensus sequence.
+
+\begin{table}[]
+\begin{tabular}{lrrr}
+Method & 25\%-q.  & Median  & 75\%-q. \\
+\hline
+kbo    & 29 690 & 73 814   & 84 420  \\
+SKA    & 78 547 & 104 990 & 117 813 \\
+Snippy  & 124 386 & 149 894 & 159 206  \\
+\end{tabular}
+\caption{Absolute errors (base pairs) in reference-based alignment of 112 \textit{E. coli} chromosome sequences across kbo, SKA and Snippy.}
+\label{map-absolute-error}
+\end{table}
+\begin{table}[]
+\begin{tabular}{lrrr}
+Method & 25\%-q.  & Median  & 75\%-q. \\
+\hline
+kbo    & 0.6\% & 1.5\% & 1.7\%  \\
+SKA    & 1.6\% & 2.1\% & 2.4\% \\
+Snippy  & 2.5\% & 3.0\%   & 3.2\%  \\
+\end{tabular}
+\caption{Relative errors (\% of reference length) in reference-based alignment of 112 \textit{E. coli} chromosome sequences across kbo, SKA and Snippy. The reference sequence length was 5 025 582 base pairs.}
+\label{map-relative-error}
+\end{table}
+
+We compared the accuracy of 'kbo map' to two other tools, SKA\cite{derelle2024seamless} and Snippy\cite{seemann2015snippy}, and the ground truth by measuring the results (A, C, G, T, and ambigious or gap) in the alignment that agree or disagree between the tested tools and the ground truth. The results were obtained by aligning query hybrid assemblies against the reference sequence, disregarding the sequencing reads. Our results show that all three tools have comparable accuracy, with {\sf kbo} being slightly better when measured by median errors (Tables \ref{map-absolute-error}, \ref{map-relative-error}). Figure \ref{fig:map-by-kmer-size}c shows how the accuracy of {\sf kbo} changes when the \emph{k}-mer size and error probability parameters are varied.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{map_parameter_comparison.pdf}
+    \caption{Resource usage and accuracy of 'kbo map' in reference-based alignment of 112 \textit{E. coli} ST131 chromosome sequences with different parameter configurations. Panel a) shows a boxplot of runtimes of each sequence, Panel b) peak memory usage, and Panel c) accuracy measured as number of incorrect base pairs out of the 5 025 582 reference base pairs. The boxes are coloured by the maximum error probability parameter used.}
+    \label{fig:map-by-kmer-size}
+\end{figure}
 
 
-
-\textcolor{red}{TODO push experiment code and plotting code to \url{https://github.com/tmaklin/kbo-paper} and sync the repo to Zenodo for archival}
-
-Specific to alignment
-
-- alignments are comparable to Snippy and SKA map
-
-- alignment is faster than Snippy or SKA map
-
-- alignment scales easily to 10s of thousands of genomes.
-
-- compare w/ Snippy, SKA map
-
-\subsection{Finding reference gene sequences in a query assembly with 'kbo find'}
-
-Specific to  find
-
-- Quick if it's not needed to know which genes exactly are present
-
-- Slower if the gene names (= individual contigs are needed). this could be implemented more efficiently with colors.
-
-- compare w/ blast
+In resource usage {\sf kbo} and SKA were comparable, with {\sf kbo} total 624 seconds (mean 5.7s per assembly) and 655MB peak memory to process the benchmark and SKA 669 seconds (6.0s per assembly) and 830MB peak memory. The slowest tool was Snippy which took 2 361 seconds (21.1s per assembly) but had a lower peak memory consumption at 385MB. Additionally, SKA and Snippy used a maximum of 29MB and 52MB temporary disk space, respectively, during the benchmark. The resource usage of {\sf kbo} is primarily determined by the \emph{k}-mer size parameter (Figures \ref{fig:map-by-kmer-size}a and \ref{fig:map-by-kmer-size}b) and whether further refinmenet with the gap filling and variant calling algorithms are used. Taken together, {\sf kbo} was the fastest and most accurate method in this benchmark.
 
 \subsection{Running kbo in the browser}
-- efficient resource use: no prebuilt indexes, no temporary space, low memory consumption, runs ok on a single thread
+In addition to the command-line client, we also provide a WebAssembly version of {\sf kbo} that runs entirely in the browser and does not send any user data to a remote server. The web version of {\sf kbo} allows users without command-line familiarity to access the tool on any device that with support for a modern browser and modest compute power. Thanks to the frugal resource usage of {\sf kbo}, the web version supports all functionality provided by the command-line client and can be used to perform any of the analyses presented in this paper. A demonstration of the web version is available online\footnote{\url{https://maklin.fi/kbo}} and can easily be deployed on any web server that supports serving WebAssembly files.
 
-Available online \footnote{https://maklin.fi/kbo}.
+\section{Discussion \textcolor{red}{Draft todo finish}}
 
-\subsection{Browser queries for AllTheBacteria genomes}
-- \textcolor{purple}{Let's save this for a separate project, it's too much to implement right now /TM}
+Plain \emph{k}-mer matching methods typically do not support retrieval of the coordinates of the matches. We resolved this problem by augmenting \emph{k}-mer matching with \emph{k}-bounded matching statistics, allowing us to transform the matching results into a format where location data can be inferred with high accuracy and converted into local alignment data. Our results show that in addition to being competitive with state-of-the-art methods in accuracy, our approach retains the attractive rapid lookups enabled by the specialized data structures for indexing \emph{k}-mers, making it a novel and practically feasible alternative to existing local alignment methods.
 
-- \textcolor{red}{TODO check feasibility of using some served genomes as the query or the target.}
+One of the two main disadvantages of our method is the comparatively high space usage, especially for large values of k, required for constructing the \emph{k}-mer index to perform queries. This issue plagues most \emph{k}-mer indexing methods, as the index size is proportional to the number of unique \emph{k}-mers in the input. Index construction algorithms often rely on streaming from temporary disk space to reduce the space usage but we opted for indexing fully in-memory to enable the browser implementation and make our methods better suited for high-performance computing usage, where disk throughput is a limiting factor for parallelisation.
 
-\noindent- \textcolor{red}{TODO  make this available as an application for the AllTheBacteria project.}
+The other future area of improvement is extending matching statistic computation to support coloured index structures, where each \emph{k}-mer in the index is accompanied by a colour that denotes its sequence of origin. Storing distinct sequences in this manner would enable efficient indexing of many closely related sequences using colourset compression and open up developing {\sf kbo} towards aligning sequencing reads against large reference collections where it is important to know which targets the read aligned against. The SBWT data structure already supports colours but an algorithm for coloured matching statistics remains elusive. We leave support for sequencing read alignment and coloured matching statistics to future work.
 
+To our knowledge, {\sf kbo} is the first sequence aligner that compiles to WebAssembly and allows running all features of the tool in a browser including using custom indexes. Web tools have found wide adoption among applied researchers but they remain difficult to customise and require server-side processing, which comes with privacy and long-term support concerns. Using WebAssembly alleviates all of these issues, as the codebase becomes much simpler without a separate client-server model and no data transfer taking place beyond serving the executable to the user. We have made the source code for all parts of our implementation freely available and expect that they will facilitate future implementations of customised analysis pipelines in a manner that is accessible to both non-experts and bioinformaticians alike.
 
-\section{Discussion}
-In no particular order:
-
-- Adding colors: matching statistics queries
-
-- index compression via pangenomes or colorset compression: we can compress ~45 000 genomes from the same species into a few gigabytes using the meta-diff indedx in Fulgor, implementing this in SBWT with efficient MS queries would enable simultaneous alignment against tens of thousands of genomes.
-
-- possibilities for gene variant calling with colors
-
-- finimizers: these together with the recombination markers output by {\sf kbo} (RR) could be used to identify potential recombination segments. Finimizers might additionally allow even more efficient queries with a prebuilt index?
-
-- Mention how the webassembly version enables implementing tools like amrfinder, kaptive, and tree inference in the browser. Use the pks island gene typing as an example of how the custom database inclusion can be utilised.
 
 \section{Code availability}
-The Rust\footnote{\url{https://www.rust-lang.org/}} library, command-line interface, and graphical user interface implementing the methods described here are freely available from Codeberg \url{https://codeberg.org/themaklin/sablast} and GitHub \url{https://github.com/tmaklin/kbo} under a MIT\footnote{\url{https://opensource.org/license/mit}} and Apache 2.0\footnote{\url{https://www.apache.org/licenses/LICENSE-2.0}} dual license.
+The Rust library, command-line interface, and graphical user interface implementing the methods described here are freely available from GitHub \url{https://github.com/tmaklin/kbo} and Codeberg \url{https://codeberg.org/themaklin/kbo} under a MIT and Apache 2.0 dual license.
 
 \section{Competing interests}
 No competing interest is declared.
 
 \section{Author contributions statement}
-T.M. designed the kbo algorithms and implemented the kbo, kbo-cli, and kbo-gui Rust libraries. J.N.A. implemented the sbwt Rust crate and derived the random match distribution. T.M., J.N.A, E.B., and S.J.P. investigated the relationship between \emph{k}-bounded matching statistics and local alignments. S.J.P. obtained funding and supervised the study. All authors contributed to the writing, reviewing, and editing of the manuscript.
+T.M. designed the core kbo algorithms and implemented the kbo, kbo-cli, and kbo-gui Rust libraries. J.N.A. implemented the sbwt Rust library and derived the random match distribution. J.N.A. and E.B. designed and implemented the variant calling algorithm. T.M., J.N.A, E.B., and S.J.P. investigated the relationship between \emph{k}-bounded matching statistics and local alignments. S.J.P. obtained funding and supervised the study. All authors contributed to the writing, reviewing, and editing of the manuscript.
 
 \section{Acknowledgments}
-This work was supported in part by the Research Council of Finland via grant 351150. TM was supported by the Research Council of Finland (EuroHPC grant).
+This work was supported in part by the Research Council of Finland via grant 351150.
 
 %\input{fig/figure_translate_cases_a}
 %\input{fig/figure_translate_cases_b}
