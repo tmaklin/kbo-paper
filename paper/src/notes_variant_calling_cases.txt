@@ -1,0 +1,11 @@
+Case 1: mismatch indel
+
+               s e 
+R = ATCTATCGACGG ATGCTACGTA
+Q =  TCTATCGACGGTATGCTACGTA
+
+Case 1: match indel
+
+              es
+R = ATCTATCGACGG ATGCTACGTA
+Q =  TCTATCGACGGGATGCTACGTA

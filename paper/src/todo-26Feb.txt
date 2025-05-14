@@ -1,3 +1,18 @@
+NEW April
+- Define a standard for MS and DMS
+- In figure 1 we have 4 strings as reference and 1 query. Is this correct?
+- Check figure 3
+- $t_p$ or just $t$?
+- check section "Filling gaps in the translated alignment"
+- add a description of every method "find, call, variant calling" at the end of introduction
+
+
+- replace SNP with SNV
+
+
+
+
+
 General comments:
 
 1. In the Methods section there are two enumerates that might look better formatted as pseudocode. Can we change them?
@@ -33,3 +48,5 @@ FIGURES:
 
 FIG. 4/5:
 - bold numbers?
+
+
