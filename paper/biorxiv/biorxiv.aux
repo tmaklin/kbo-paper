@@ -1,0 +1,146 @@
+\relax 
+\providecommand{\transparent@use}[1]{}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{wick2023assembling}
+\citation{parks2020complete,richardson2023mgnify,hunt2024allthebacteria}
+\citation{deorowicz2023agc,bvrinda2024efficient}
+\citation{wick2025reads}
+\citation{alanko2023small}
+\citation{alanko2023longest,alanko2024finimizers}
+\citation{alanko2023themisto,fan2024fulgor}
+\oddpage@label{1}{1}
+\providecommand \oddpage@label [2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{alanko2023longest,alanko2024finimizers,alanko2023small}
+\citation{alanko2023small}
+\citation{alanko2023longest,alanko2024finimizers,alanko2023small}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Methods}{2}{section.2}\protected@file@percent }
+\newlabel{methods}{{2}{2}{Methods}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.1}}Preliminaries}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{preliminaries}{{{2.1}}{2}{Preliminaries}{subsection.2.1}{}}
+\newlabel{def:padded_k_spectrum}{{2}{2}{}{definition.2}{}}
+\newlabel{def:SBWT}{{3}{2}{}{definition.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Illustration of {\em  ExtendRight} (resulting in blue intervals) and {\em  ContractLeft} operations (resulting in green intervals) to match the string {\sf  GTATG} with $k=4$ against a reference $\mathcal  {S}= \{${\sf  TGTTTG}, {\sf  TTGCTAT}, {\sf  ACGTAGTATAT}, {\sf  TGTAAA}$\}$. This match produces the matching statistics vector $MS=\{ 1, 2, 3, 4, 2 \}$ and derandomizes to the vector $DMS=\{ 1, 2, 3, 4, 0 \}$ if the threshold used is $t = 2$. \relax }}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:sbwt-search}{{1}{2}{Illustration of {\em ExtendRight} (resulting in blue intervals) and {\em ContractLeft} operations (resulting in green intervals) to match the string {\sf GTATG} with $k=4$ against a reference $\mathcal {S}= \{${\sf TGTTTG}, {\sf TTGCTAT}, {\sf ACGTAGTATAT}, {\sf TGTAAA}$\}$. This match produces the matching statistics vector $MS=\{ 1, 2, 3, 4, 2 \}$ and derandomizes to the vector $DMS=\{ 1, 2, 3, 4, 0 \}$ if the threshold used is $t = 2$. \relax }{figure.caption.1}{}}
+\citation{alanko2023longest}
+\citation{alanko2024finimizers}
+\citation{alanko2024finimizers}
+\newlabel{def:LCS-array}{{4}{3}{}{definition.4}{}}
+\newlabel{def:k-bounded-ms}{{5}{3}{}{definition.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.2}}Identifying statistically significant match positions}{3}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:random-match-model}{{{2.2}}{3}{Identifying statistically significant match positions}{subsection.2.2}{}}
+\newlabel{line:MS-1-start}{{5}{3}{Preliminaries}{definition.5}{}}
+\newlabel{line:MS-1-end}{{8}{3}{Preliminaries}{definition.5}{}}
+\newlabel{line:MS-2-start}{{10}{3}{Preliminaries}{definition.5}{}}
+\newlabel{line:MS-2-end}{{11}{3}{Preliminaries}{definition.5}{}}
+\newlabel{line:MS-4-assignment}{{13}{3}{Preliminaries}{definition.5}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces \relax \fontsize  {7}{10}\selectfont  \abovedisplayskip 10\p@ minus 3\p@ \belowdisplayskip \abovedisplayskip \abovedisplayshortskip \z@ plus 2\p@ \belowdisplayshortskip 4\p@ plus 2\p@ minus2\p@ \def \topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ {\topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ }$k$-bounded matching statistics.\relax }}{3}{algorithm.1}\protected@file@percent }
+\newlabel{alg:MS}{{1}{3}{\small $k$-bounded matching statistics.\relax }{algorithm.1}{}}
+\newlabel{geom-distribution}{{1}{3}{Identifying statistically significant match positions}{equation.2.1}{}}
+\newlabel{max-of-geom-distributions}{{2}{3}{Identifying statistically significant match positions}{equation.2.2}{}}
+\newlabel{analytic_noise_treshold}{{3}{3}{Identifying statistically significant match positions}{equation.2.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.3}}Derandomizing $k$-bounded matching statistic vectors}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces \relax \fontsize  {7}{10}\selectfont  \abovedisplayskip 10\p@ minus 3\p@ \belowdisplayskip \abovedisplayskip \abovedisplayshortskip \z@ plus 2\p@ \belowdisplayshortskip 4\p@ plus 2\p@ minus2\p@ \def \topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ {\topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ }Derandomizing the MS vector\relax }}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:derandomized-MS}{{2}{4}{\small Derandomizing the MS vector\relax }{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.4}}Translating derandomized matching statistics into alignment events}{4}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Derandomizing the MS vector. The vertical axis is the length of a match (up to the \emph  {k}-mer size $k$) ending at a given position in the query (horizontal axis). The black line shows values of the \textit  {k}-bounded matching statistics. The dashed grey horizontal line marks the noise threshold $t$. The dotted red line shows the derandomized values.\relax }}{4}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:derandomization}{{2}{4}{Derandomizing the MS vector. The vertical axis is the length of a match (up to the \emph {k}-mer size $k$) ending at a given position in the query (horizontal axis). The black line shows values of the \textit {k}-bounded matching statistics. The dashed grey horizontal line marks the noise threshold $t$. The dotted red line shows the derandomized values.\relax }{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Illustration of the results of applying the translation procedure to a derandomized matching statistics vector. Examples in both panels assume \emph  {k}-mer size 3 and derandomization threshold $t=2$. MS is short for matching statistics and DMS for derandomized matching statistics.\relax }}{4}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:translate_cases}{{3}{4}{Illustration of the results of applying the translation procedure to a derandomized matching statistics vector. Examples in both panels assume \emph {k}-mer size 3 and derandomization threshold $t=2$. MS is short for matching statistics and DMS for derandomized matching statistics.\relax }{figure.caption.3}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces \relax \fontsize  {7}{10}\selectfont  \abovedisplayskip 10\p@ minus 3\p@ \belowdisplayskip \abovedisplayskip \abovedisplayshortskip \z@ plus 2\p@ \belowdisplayshortskip 4\p@ plus 2\p@ minus2\p@ \def \topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ {\topsep 4.5\p@ plus 2\p@ minus 1\p@ \itemsep \parsep \topsep 4\p@ plus 2\p@ minus 2\p@ }Translating the DMS vector\relax }}{4}{algorithm.3}\protected@file@percent }
+\newlabel{alg:tranlating-DMS}{{3}{4}{\small Translating the DMS vector\relax }{algorithm.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.5}}Variant calling using matching statistics}{4}{subsection.2.5}\protected@file@percent }
+\citation{wick2025reads}
+\citation{marccais2018mummer4}
+\citation{li2013aligning}
+\citation{garrison2012haplotype}
+\citation{derelle2024seamless}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Examples of variant calling outputs with $k=9$. The first case is the most basic one: We have a substitution of CTC with AG, which are found in the range $[s..e)$ in each sequence. In the second case, with have an insertion of one character which is not equal to the preceding character in the query, making one of the intervals $[s..e)$ empty, indicating an indel. In the third case, we have an insertion of characters that are equal to the preceding character. In this case, the predicted start and end points cross, making the gaps negative, but the difference in the length of the gaps still gives the length of the insertion. \relax }}{5}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:variantcall}{{4}{5}{Examples of variant calling outputs with $k=9$. The first case is the most basic one: We have a substitution of CTC with AG, which are found in the range $[s..e)$ in each sequence. In the second case, with have an insertion of one character which is not equal to the preceding character in the query, making one of the intervals $[s..e)$ empty, indicating an indel. In the third case, we have an insertion of characters that are equal to the preceding character. In this case, the predicted start and end points cross, making the gaps negative, but the difference in the length of the gaps still gives the length of the insertion. \relax }{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.6}}Filling gaps in the translated alignment}{5}{subsection.2.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Results from four tested methods in resolving single-nucleotide substitutions. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.\relax }}{5}{table.caption.7}\protected@file@percent }
+\newlabel{vc-snps}{{1}{5}{Results from four tested methods in resolving single-nucleotide substitutions. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.\relax }{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{2.7}}Implementation}{5}{subsection.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Use cases}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {{3.1}}Variant calling with 'kbo call'}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Overview of the three main algorithms in {\sf  kbo}: find, call, and map. The figure shows which parts of the SBWT and {\sf  kbo} core libraries each algorithm makes use of and illustrates example inputs and outputs to and from the user interface implementations. This figure was created with \emph  {k}-mer size $3$ and derandomization threshold $2$. In the translated output, 'D' denotes a deletion, 'I' an insertion, and 'X' a single nucleotide polymorphism. In the translated output and the Alignment box sequences, '-' denotes base pairs that are not found in the reference.\relax }}{6}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:kbo-overview}{{5}{6}{Overview of the three main algorithms in {\sf kbo}: find, call, and map. The figure shows which parts of the SBWT and {\sf kbo} core libraries each algorithm makes use of and illustrates example inputs and outputs to and from the user interface implementations. This figure was created with \emph {k}-mer size $3$ and derandomization threshold $2$. In the translated output, 'D' denotes a deletion, 'I' an insertion, and 'X' a single nucleotide polymorphism. In the translated output and the Alignment box sequences, '-' denotes base pairs that are not found in the reference.\relax }{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Resource consumption in variant calling for the four tested methods {\sf  kbo}, MUMmer4, Shred, and SKA. Panel a) shows a boxplot of time taken to process each sample. Panel b) the peak memory usage during each run, and Panel c) the temporary disk requirement. The thick lines denote the median and the whiskers the 25\% and 75\% quantiles. In panels a) and c) the vertical axis has been cut to highlight the differences between Shred and the other methods. \relax }}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:vc-resource-usage}{{6}{6}{Resource consumption in variant calling for the four tested methods \kbo , MUMmer4, Shred, and SKA. Panel a) shows a boxplot of time taken to process each sample. Panel b) the peak memory usage during each run, and Panel c) the temporary disk requirement. The thick lines denote the median and the whiskers the 25\% and 75\% quantiles. In panels a) and c) the vertical axis has been cut to highlight the differences between Shred and the other methods. \relax }{figure.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results from three tested methods in resolving insertions. SKA does not resolve insertions and deletions so it is omitted. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.\relax }}{6}{table.caption.8}\protected@file@percent }
+\newlabel{vc-indels}{{2}{6}{Results from three tested methods in resolving insertions. SKA does not resolve insertions and deletions so it is omitted. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.\relax }{table.caption.8}{}}
+\citation{gladstone2021emergence,arredondo2023escherichia}
+\citation{schwengers2021bakta}
+\citation{moriel2010identification}
+\citation{tange_2024_13826092}
+\citation{camacho2009blast+}
+\citation{gladstone2021emergence,arredondo2023escherichia}
+\citation{vasimuddin2019efficient}
+\citation{10.1093/gigascience/giab008}
+\citation{derelle2024seamless}
+\citation{seemann2015snippy}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{3.2}}Gene finding with 'kbo find'}{7}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {{3.3}}Reference-based alignment with 'kbo map'}{7}{subsection.3.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Absolute errors (base pairs) in reference-based alignment of 112 \textit  {E. coli} chromosome sequences across {\sf  kbo}, SKA and Snippy.\relax }}{7}{table.caption.9}\protected@file@percent }
+\newlabel{map-absolute-error}{{3}{7}{Absolute errors (base pairs) in reference-based alignment of 112 \textit {E. coli} chromosome sequences across \kbo , SKA and Snippy.\relax }{table.caption.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Relative errors (\% of reference length) in reference-based alignment of 112 \textit  {E. coli} chromosome sequences across {\sf  kbo}, SKA and Snippy. The reference sequence length was 5,025,582 base pairs.\relax }}{7}{table.caption.10}\protected@file@percent }
+\newlabel{map-relative-error}{{4}{7}{Relative errors (\% of reference length) in reference-based alignment of 112 \textit {E. coli} chromosome sequences across \kbo , SKA and Snippy. The reference sequence length was 5,025,582 base pairs.\relax }{table.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Resource usage and relative error of 'kbo map' in reference-based alignment of 112 \textit  {E. coli} ST131 chromosome sequences with different parameter configurations. Panel a) shows a boxplot of runtimes of each sequence, Panel b) peak memory usage, and Panel c) relative error measured as number of incorrect base pairs out of the 5 025 582 reference base pairs.\relax }}{7}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:map-by-kmer-size}{{7}{7}{Resource usage and relative error of 'kbo map' in reference-based alignment of 112 \textit {E. coli} ST131 chromosome sequences with different parameter configurations. Panel a) shows a boxplot of runtimes of each sequence, Panel b) peak memory usage, and Panel c) relative error measured as number of incorrect base pairs out of the 5 025 582 reference base pairs.\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {{3.4}}Running {{\sf  kbo}} in a browser}{7}{subsection.3.4}\protected@file@percent }
+\citation{alanko2023small}
+\citation{alanko2023longest,alanko2024finimizers}
+\citation{alanko2023themisto}
+\bibstyle{plain}
+\bibdata{reference}
+\bibcite{alanko2023longest}{{1}{}{{}}{{}}}
+\bibcite{alanko2024finimizers}{{2}{}{{}}{{}}}
+\bibcite{alanko2023small}{{3}{}{{}}{{}}}
+\bibcite{alanko2023themisto}{{4}{}{{}}{{}}}
+\bibcite{arredondo2023escherichia}{{5}{}{{}}{{}}}
+\bibcite{bvrinda2024efficient}{{6}{}{{}}{{}}}
+\bibcite{camacho2009blast+}{{7}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Discussion}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Code availability}{8}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Competing interests}{8}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Author contributions statement}{8}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Acknowledgments}{8}{section.8}\protected@file@percent }
+\bibcite{10.1093/gigascience/giab008}{{8}{}{{}}{{}}}
+\bibcite{deorowicz2023agc}{{9}{}{{}}{{}}}
+\bibcite{derelle2024seamless}{{10}{}{{}}{{}}}
+\bibcite{fan2024fulgor}{{11}{}{{}}{{}}}
+\bibcite{garrison2012haplotype}{{12}{}{{}}{{}}}
+\bibcite{gladstone2021emergence}{{13}{}{{}}{{}}}
+\bibcite{hunt2024allthebacteria}{{14}{}{{}}{{}}}
+\bibcite{li2013aligning}{{15}{}{{}}{{}}}
+\bibcite{marccais2018mummer4}{{16}{}{{}}{{}}}
+\bibcite{moriel2010identification}{{17}{}{{}}{{}}}
+\bibcite{parks2020complete}{{18}{}{{}}{{}}}
+\bibcite{richardson2023mgnify}{{19}{}{{}}{{}}}
+\bibcite{schwengers2021bakta}{{20}{}{{}}{{}}}
+\bibcite{seemann2015snippy}{{21}{}{{}}{{}}}
+\bibcite{tange_2024_13826092}{{22}{}{{}}{{}}}
+\bibcite{vasimuddin2019efficient}{{23}{}{{}}{{}}}
+\bibcite{wick2023assembling}{{24}{}{{}}{{}}}
+\bibcite{wick2025reads}{{25}{}{{}}{{}}}
+\global\@namedef{@lastpage@}{9}
+\expandafter\ifx\csname c@myauthcount@totc\endcsname\relax\newcounter{myauthcount@totc}\fi\setcounter{myauthcount@totc}{4}
+\expandafter\ifx\csname c@myhistorycount@totc\endcsname\relax\newcounter{myhistorycount@totc}\fi\setcounter{myhistorycount@totc}{0}
+\expandafter\ifx\csname c@myaddcount@totc\endcsname\relax\newcounter{myaddcount@totc}\fi\setcounter{myaddcount@totc}{2}
+\providecommand\NAT@force@numbers{}\NAT@force@numbers
+\gdef\svg@ink@ver@settings{{\m@ne }{inkscape}{\m@ne }}
+\gdef \@abspage@last{9}

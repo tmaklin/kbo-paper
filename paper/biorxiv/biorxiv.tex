@@ -1,0 +1,528 @@
+%%
+%% Copyright 2022 OXFORD UNIVERSITY PRESS
+%%
+%% This file is part of the 'biorxiv Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'biorxiv Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for OXFORD UNIVERSITY PRESS's document class `biorxiv' 
+%% with bibliographic references
+%%
+
+%%%CONTEMPORARY%%%
+\documentclass[unnumsec,webpdf,modern,large]{biorxiv}%
+%\documentclass[unnumsec,webpdf,modern,large,namedate]{biorxiv}% uncomment this line for author year citations and comment the above
+%\documentclass[unnumsec,webpdf,contemporary,medium]{biorxiv}
+%\documentclass[unnumsec,webpdf,contemporary,small]{biorxiv}
+
+%%%MODERN%%%
+%\documentclass[unnumsec,webpdf,modern,large]{biorxiv}
+%\documentclass[unnumsec,webpdf,modern,large,namedate]{biorxiv}% uncomment this line for author year citations and comment the above
+%\documentclass[unnumsec,webpdf,modern,medium]{biorxiv}
+%\documentclass[unnumsec,webpdf,modern,small]{biorxiv}
+
+%%%TRADITIONAL%%%
+%\documentclass[unnumsec,webpdf,traditional,large]{biorxiv}
+%\documentclass[unnumsec,webpdf,traditional,large,namedate]{biorxiv}% uncomment this line for author year citations and comment the above
+%\documentclass[unnumsec,namedate,webpdf,traditional,medium]{biorxiv}
+%\documentclass[namedate,webpdf,traditional,small]{biorxiv}
+
+%\onecolumn % for one column layouts
+
+%\usepackage{showframe}
+
+\graphicspath{{fig/}}
+
+% svg images
+\usepackage[inkscapelatex=false]{svg}
+\usepackage[normalem]{ulem}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{subfigure}
+%\usepackage{subcaption}
+%\usepackage[noend]{algpseudocode}
+\usepackage{comment}
+
+% line numbers
+%\usepackage[mathlines, switch]{lineno}
+%\usepackage[right]{lineno}
+
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}%
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}
+
+
+\newcommand{\kbo}{{\sf kbo}}
+
+\begin{document}
+
+\journaltitle{Journal Title Here}
+\DOI{DOI HERE}
+\copyrightyear{2022}
+\pubyear{2019}
+\access{Advance Access Publication Date: Day Month Year}
+\appnotes{Paper}
+
+\firstpage{1}
+
+%\subtitle{Subject Section}
+
+\title[Sequence alignment with kbo]{Sequence alignment with \emph{k}-bounded matching statistics}
+
+\author[1,$\ast$]{Tommi M\"{a}klin\ORCID{0000-0003-0970-3514}}
+\author[2]{Jarno N. Alanko\ORCID{0000-0002-8003-9225}}
+\author[2]{Elena Biagi\ORCID{0000-0002-8573-3603}}
+\author[2]{Simon J. Puglisi\ORCID{0000-0001-7668-7636}}
+
+\authormark{M\"{a}klin, Alanko, Biagi and Puglisi}
+
+\address[1]{\orgdiv{Department of Biostatistics}, \orgname{University of Oslo}, \orgaddress{\state{Oslo}, \country{Norway}}}
+\address[2]{\orgdiv{Department of Computer Science}, \orgname{University of Helsinki}, \orgaddress{\state{Helsinki}, \country{Finland}}}
+
+\corresp[$\ast$]{Corresponding author. \href{email:tommi.maklin@helsinki.fi}{tommi.maklin@medisin.uio.no}}
+
+\received{Date}{0}{Year}
+\revised{Date}{0}{Year}
+\accepted{Date}{0}{Year}
+
+%\editor{Associate Editor: Name}
+
+%\abstract{
+%\textbf{Motivation:} .\\
+%\textbf{Results:} .\\
+%\textbf{Availability:} .\\
+%\textbf{Contact:} \href{name@email.com}{name@email.com}\\
+%\textbf{Supplementary information:} Supplementary data are available at \textit{Journal Name}
+%online.}
+
+\abstract{Finding high-quality local alignments between a query sequence and sequences contained in a large genomic database is a fundamental problem in computational genomics, at the core of thousands of biological analysis pipelines. Here, we describe a novel algorithm for approximate local alignment search based on the so-called \emph{k}-bounded matching statistics of the query sequence with respect to an indexed database of sequences. We compute the \emph{k}-bounded matching statistics, which capture the longest common suffix lengths of consecutive \emph{k}-mer matches between query and target sequences, using the spectral Burrows-Wheeler transform, a data structure that enables computationally efficient queries. We show that our method is as fast and as accurate as state-of-the-art tools in several bacterial genomics tasks. Our method is available as a set of three {\sf kbo} Rust packages that provide a command-line interface, a graphical user interface that runs in a browser without server-side processing, and a core library that can be accessed by other tools.}
+\keywords{sequence alignment, genomics, spectral Burrows-Wheeler transform, SBWT, BWT, \emph{k}-bounded matching statistics, \emph{k}-mer matching}
+
+% \boxedtext{
+% \begin{itemize}
+% \item Key boxed text here.
+% \item Key boxed text here.
+% \item Key boxed text here.
+% \end{itemize}}
+
+\maketitle
+
+
+\section{Introduction}
+Genome analysis pipelines typically begin with the alignment of DNA sequences, in the form of, for example, sequencing reads or assemblies, against a known reference sequence. The resulting alignment describes compatibility between the two sequences and is the basis for many downstream analyses. In tasks where accuracy is essential and resources plentiful, the gold standard for alignment is to map short-read sequencing data against a reference genome assembled from both short and long reads~\cite{wick2023assembling}. However, particularly in microbial genomics, the largest current collections contain data from hundreds of thousands to millions of samples~\cite{parks2020complete,richardson2023mgnify,hunt2024allthebacteria}, making storage, distribution, and processing of large sequencing read sets the domain of only the largest institutions. This has led to the adoption of algorithms that perform essential tasks using only assembly data instead of sequencing reads, as specialized tools compress assembled genomes efficiently \cite{deorowicz2023agc,bvrinda2024efficient} and tools operating on assemblies require less computational resources.
+
+Tools for assembly comparison typically report the coordinates of aligned segments in a query relative to some reference, infer a consensus sequence consisting of nucleotide characters and gaps, and find insertions and deletions in the query. Accuracy in these three tasks depends highly on the quality of the input sequences~\cite{wick2025reads}.
+Different tools tend to produce similar results with high-quality data, and thus focus shifted towards the development of new, faster, and more specialized algorithms and pipelines. 
+In this paper, we devise and implement a new algorithm for solving the aforementioned comparison tasks 
+%by pairing \emph{k}-mer matching with computation of the longest common suffix length of each match, 
+by computing {\em \emph{k}-bounded matching statistics} between query and reference sequences. 
+For each position in the query sequence, a matching statistic describes the length of the sequence of characters preceding the position that are the same in both query and reference. The match length is capped at \emph{k} characters, and so we use the term \emph{k}-bounded matching statistics. We provide a formal definition in the Methods section.
+
+Our approach, called {\sf kbo}, is built on the recent spectral Burrows-Wheeler transform (SBWT) data structure, which allows rapid \emph{k}-mer lookups in compact space \cite{alanko2023small}. These lookups can be extended to compute the \emph{k}-bounded matching statistics by adding a longest common suffix array to the SBWT~\cite{alanko2023longest,alanko2024finimizers}. We show that combining SBWT lookups with the \emph{k}-bounded matching statistics information and a suffix match derandomization procedure enables retrieving the coordinates of matching regions in a query sequence even though the SBWT does not conserve the reference sequence location in its construction. Instead of storing the coordinates in the index, we stream the sequence where coordinate information should be preserved and index the sequence where location does not matter. As a whole, our algorithm represents a significant advance in \emph{k}-mer matching methods, which have previously entirely ignored or discarded coordinate information and locality in favour of scalable lookups~\cite{alanko2023themisto,fan2024fulgor}.
+
+In {\sf kbo} we implement three main modes of operation, targeted at three different problems, that make use of \emph{k}-mer lookups and \emph{k}-bounded matching statistics. The first algorithm, \textit{call}, is a specialized variant calling algorithm that reports insertions, deletions, and single-nucleotide variants in a query against some reference, describing local variations between two typically closely related sequences. Our second algorithm, \textit{find}, compares a query and a reference and reports locally aligned segments in the query with an option to allow a small number of gaps and mismatches. Our last algorithm, \textit{map}, performs reference-based alignment and produces a consensus sequence relative to the reference. The outputs from our three algorithms are useful in a number of bacterial genomics downstream analyses, ranging from genome-wide association studies to gene finding to phylogenetic inference, and their computational requirements are competitive with other state-of-the-art tools.
+
+Beyond algorithmic novelty, the main advantage of {\sf kbo} lies in its effective use of the SBWT data structure to perform comparisons in a rapid and parallelisable manner. We demonstrate that our implementation either matches or beats state-of-the-art methods in both accuracy and speed while retaining reasonable space requirements. Additionally, {\sf kbo} requires no temporary disk space, making it ideal for massively parallel analyses. These low computational requirements also enable a fully in-browser implementation of our algorithms, greatly improving accessibility for non-experts and researchers with limited technical proficiency or resources. To our knowledge, {\sf kbo} is the first fully-featured sequence aligner that can run entirely in the browser while also providing an efficient command-line client and a stable core library for use in other programs. We expect {\sf kbo} to facilitate further democratization of bioinformatics and find adoption in fields processing large assembly collections.
+
+\section{Methods}\label{methods}
+
+\begin{figure*}[b]
+    \centering
+    \includegraphics[scale=0.6]{fig/SBWT_search_LCS.drawio.pdf}
+    \caption{Illustration of {\em ExtendRight} (resulting in blue intervals) and {\em ContractLeft} operations (resulting in green intervals) to match the string {\sf GTATG} with $k=4$ against a reference $\mathcal{S}= \{${\sf TGTTTG}, {\sf TTGCTAT}, {\sf ACGTAGTATAT}, {\sf TGTAAA}$\}$. This match produces the matching statistics vector $MS=\{ 1, 2, 3, 4, 2 \}$ and derandomizes to the vector $DMS=\{ 1, 2, 3, 4, 0 \}$ if the threshold used is $t = 2$. }
+    \label{fig:sbwt-search}
+\end{figure*}
+
+\subsection{Preliminaries}\label{preliminaries}
+
+{\sf kbo} is implemented on top of state-of-the-art string processing data structures and algorithms. In this section, we give an overview of the machinery we use to compute the $k$-bounded matching statistics. We provide only the key definitions necessary to be able to talk about the data structures on a technical level; the motivation and theory behind the definitions are described in detail in prior work~\cite{alanko2023longest, alanko2024finimizers, alanko2023small}.
+
+
+
+%that lie at the heart {\sf kbo}. 
+
+%The SBWT essentially sorts the last characters of the distinct $k$-mers in the input by the \emph{colexicographic} (right-to-left lexicographic) order of their prefixes of length $k-1$. 
+The main workhorse of {\sf kbo} is the spectral Burrows-Wheeler transform (SBWT) data structure. Roughly speaking, the SBWT lists the sets of outgoing edge labels from nodes in the de Bruijn graph of the input $k$-mers, such that these sets are sorted by the \emph{colexicographic} (right-to-left lexicographic) order of the $k$-mers on the nodes.
+
+To give the precise definition, we need to introduce the concepts of \emph{$k$-spectrum} and \emph{padded $k$-spectrum}.%First we give the definition of a $k$-spectrum of a string.
+%First, the $k$-spectrum of a string is the set of distinct $k$-mers in the string.
+
+\begin{definition}($k$-Spectrum) The $k$-spectrum $\mathcal{S}_k(S)$ of string $S$ is the set of distinct $k$-mers of $S$: $\{S[i..i+k-1] \; | \; i = 1 , \ldots, |S|-k+1\}$.
+%\end{definition}
+%
+%\begin{definition}($k$-Spectrum of a set of strings) 
+The $k$-spectrum $\mathcal{S}_k(S_1, \ldots, S_m)$ of a set of strings $S_1, \ldots, S_m$ is the union $\bigcup_{i = 1}^m \mathcal{S}_k(S_i)$.
+\end{definition}
+
+\noindent Informally, a \emph{padded $k$-spectrum} adds a minimal set of $\$$-padded \emph{dummy} $k$-mers to ensure that in the de Bruijn graph of $\mathcal S_k(S_1, \ldots, S_m)$ and the dummy $k$-mers, every non-dummy $k$-mer has an incoming path of length at least $k$.
+
+\begin{definition}\label{def:padded_k_spectrum} (Padded $k$-Spectrum)
+Let $R = \mathcal{S}_k(S_1, \ldots, S_m)$ be a $k$-spectrum with alphabet $\Sigma$, and let $R' \subseteq R$ be the set of $k$-mers $Y$ such that $Y[1..k-1]$ is not a suffix of any $k$-mer in $R$. The padded $k$-spectrum is the set $\mathcal{S}_k^+(S_1, \ldots, S_m) = R \cup \{\$^k\} \cup \bigcup_{Y \in R'} \{\$^{k-i} Y[1..i] \; | \; i = 1, \ldots, k-1\}$, with special character $\$ \not\in \Sigma$ and $\$ < c$ for all $c \in \Sigma$.
+\end{definition}
+\noindent For example, if $S_1 = $ {\sf ACGT}, $S_2 = $ {\sf GACG} and $k=3$, then $\mathcal{S}_3(X_1, X_2) = \{ {\sf ACG }, {\sf CGT }, {\sf GAC }\}$ and $\mathcal{S}_3^+(X_1, X_2) = $ $\{{\sf ACG }, {\sf CGT}, {\sf GAC }, {\sf \$\$\$}, {\sf \$\$G}, {\sf \$GA} \}$.
+
+We are now ready to define the SBWT.
+
+\begin{definition}\label{def:SBWT}(Spectral Burrows-Wheeler transform (SBWT)~\cite{alanko2023small}) Let $R^+$ be a padded $k$-spectrum and let $S_1, \ldots, S_{|R|}$ be the elements of $R^+$ in colexicographic order. The SBWT is the sequence of sets $A_1, \ldots, A_{|R|}$ with $A_i \subseteq \Sigma$ such that $A_i = \emptyset$ if $i > 1$ and $S_i[2..k] = S_{i-1}[2..k]$, otherwise $A_i = \{c \in \Sigma \; | \; S_i[2..k]c \in R^+\}$.
+\end{definition}
+\noindent We refer the reader to~\cite{alanko2023longest, alanko2024finimizers, alanko2023small} for examples. The Longest Common Suffix array is the key to efficient computation of the $k$-bounded matching statistics (to be defined later in this section):
+
+\begin{definition}\label{def:LCS-array}(Longest Common Suffix ($LCS$) Array~\cite{alanko2023longest})     
+Let $R^+$ be a padded $k$-spectrum and let $X_i$ be the colexicographically $i$-th $k$-mer of $R^+$. 
+The $LCS$ array is an array of length $|R^+|$ s.t. $LCS[1] = 0$, and for $i > 1$, $LCS[i]$ is the length of the longest common suffix of $S_{i-1}$ and $S_i$.
+\end{definition}
+ In the above definition, we consider the empty string as a common suffix of any two $k$-mers, so that the longest common suffix is well-defined for any pair of $k$-mers.
+An example $LCS$ array is shown in Figure~\ref{fig:sbwt-search}.
+
+When the $k$-mers in $R^+$ are sorted colexicographically, the subset of $k$-mers in $R^+$ that share a string $\alpha$ as a suffix are next to each other, forming a contiguous range. This is called the \emph{colexicographic range} of $\alpha$. The colexicographic range of a string $\alpha$ that is \emph{longer} than $k$ is defined as the range of $k$-mers in the sorted list of $R^+$ that have the last $k$ characters of $\alpha$ as a suffix, making the range either singleton or empty. %Thus if the string $\alpha$ has a length bigger than $k$, its colexicographic range is either singleton or empty. \textcolor{blue}{SJP: making the range either singleton or empty?}. 
+The SBWT provides two operations on colexicographic ranges $[\ell, r]$ of any string $\alpha$: 
+
+\begin{itemize}
+\item ExtendRight($\ell, r, c$) returns the colexicoraphic range of string $\alpha c$ (possibly an empty range).
+\item ContractLeft($\ell, r$), with $[\ell, r]$ being the colexicographic range of $\alpha$, returns the colexicographic range of $\alpha[2..|\alpha|]$.
+%defined only if $|\alpha| \geq 1$, returns the colexicographic range of $\alpha[2..|\alpha|]$ if $|\alpha| >1$ or $R^+$ if $|\alpha|=1$. \textcolor{red}{TODO:can we write this better? longest proper suffix of $\alpha$ if it exists, $R^+$ otherwise?}
+\end{itemize}
+
+See Alanko et al. \cite{alanko2024finimizers} for details on how to implement these operations using the SBWT. Figure~\ref{fig:sbwt-search} provides an illustration of both ExtendRight and ContractLeft operations.
+
+%\subsection{\texorpdfstring{$k$-bounded matching statistics}{k-bounded matching statistics}}
+
+The $k$-bounded matching statistics are defined as follows:
+
+\begin{definition}\label{def:k-bounded-ms}
+    ($k$-bounded matching statistics \cite{alanko2024finimizers})
+    The $k$-bounded matching statistics for a query string $Q$ against a set of reference strings $S_1, \ldots, S_m$ is a vector $MS_k[1..|Q|]$ such that $MS_k[i]$ is the largest integer $l \leq k$ such that $Q[i-l+1..i]$ %\textcolor{red}{$Q[i..i-d+1]$ this is not a suffix ending in i}
+    is a substring of at least one reference $S_1, \ldots, S_m$.
+\end{definition}
+
+In what follows, we may drop the subscript of $MS_k$ since $k$ is assumed to be fixed at indexing time.
+
+The padded $k$-spectrum $R^+$ provides an equivalent formulation that is easier to compute: the value of $MS[i]$ is the length $l$ of the longest \emph{suffix of a $k$-mer} in the padded spectrum of $T_1, \ldots, T_m$ that matches $Q[i-l+1..i]$. The $k$-mers in $R^+$ that have suffix $Q[i-l+1..i]$ are adjacent in the colexicographically sorted list of $k$-mers in $R^+$ (the colexicographic range of $Q[i-l+1..i]$). Algorithm \ref{alg:MS} shows pseudocode to compute the MS vector and the colexicographic ranges $[\ell, r]$ corresponding to the longest match at each position.
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\small
+\Require A query string $Q$ and a data structure supporting $ExtendRight$ and $ContractLeft$ on the padded $k$-mer spectrum. %in constant time. \\
+\Ensure $MS_k[1..|Q|]$
+\State $\ell, r \gets [1,n]$ \Comment{The current colexicographic range}
+\State $l \gets 0$ \Comment{The length of the current match, up to $k$}
+\State $MS_k[1..|Q|] \gets $ Array of length $|Q|$.
+\For{$i = 1..|Q|$}
+\While{$l > 0 \textbf{ and } ExtendRight(\ell, r, Q[i]) = \emptyset$}\label{line:MS-1-start}
+    \State $\ell, r \gets ContractLeft(\ell, r)$
+    \State $l \gets l-1$
+\EndWhile \label{line:MS-1-end}
+\If{$ExtendRight(\ell, r, Q[i]) \neq \emptyset$}
+    \State $\ell, r \gets ExtendRight(\ell, r, Q[i])$\label{line:MS-2-start}
+    \State $p \gets \min(k, l+1)$\label{line:MS-2-end}
+\EndIf
+\State $MS_k[i] \gets l$ %\Comment{The frequency of the match is $r - \ell + 1$} 
+\label{line:MS-4-assignment}
+\EndFor
+\caption{\small $k$-bounded matching statistics.} 
+\label{alg:MS}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Identifying statistically significant match positions}\label{sec:random-match-model}
+For each query $Q$, we use Algorithm \ref{alg:MS} to compute the matching statistics vector $MS[1..|Q|]$. The matching statistic $MS[i]$ is the length of the longest match ending at position $i$ in $Q$, up to length $k$ (See Definition \ref{def:k-bounded-ms}). Even a random query will likely match some number of nucleotides at every position by chance alone. Our goal in this section is to derive a threshold for a statistically significant match length.
+
+This threshold must be a function of the number of $k$-mers in the index: the larger the amount of indexed data, the longer matches we expect to find by chance. Let us denote the set of $k$-mers in the index with $\mathcal I$. We use a model where all the $k$-mers in $\mathcal I$ are independent random strings. The match length distribution at a given position against a single random $k$-mer follows a geometric distribution truncated at $k$. To simplify the formulas, we assume an untruncated geometric distribution. This is a reasonable approximation since for values $k \geq 30$ that we use, the tail probability of random suffix match lengths close to \emph{k} is vanishingly small. With these assumptions, if $X$ is the random variable denoting the length of the match against a single $k$-mer, the cumulative distribution $P(X \leq t)$ is given by:
+
+\begin{equation}
+    P\left(X \leq t\right) = 1 - p^{t + 1},
+\label{geom-distribution}
+\end{equation}
+where $p$ is the probability that two nucleotides match by chance, e.g., $p = 1/4$. Now, let $M$ be a random variable denoting the length of the longest suffix match ending at some position $Q[i]$ against the entire index $\mathcal{I}$ containing $n$ distinct $k$-mers. Since the $k$-mers in $\mathcal I$ are assumed to be independent, the CDF of the maximum match length is:
+
+%Since distribution of the longest common prefix of the query string $S_k$ and any string $S_i \in \mathcal{I}$ from the index $\mathcal{I}$ is given by the random variable $\mathcal{X}$, 
+%we can define a new random variable $\mathcal{M}$ 
+%which is the maximum of $n$ independent random variables with the same distribution as 
+%$\mathcal{X}$ by setting 
+%$\mathcal{M} = \text{max}\left\{\mathcal{X}_1, \text{\textellipsis}, \mathcal{X}_n\right\}$. 
+%Because the variables $\mathcal{X}$ were assumed independent, the CDF of $\mathcal{M}$ is the product of $n$ random variables with the cumulative distribution function from Equation (\ref{geom-distribution})
+
+\begin{equation}
+    P\left(M \leq t\right) = P\left(X \leq t\right)^n = \left(1 - p^{t + 1}\right)^n
+\label{max-of-geom-distributions}    
+\end{equation}
+Suppose we want to consider a match as statistically significant if it occurs with probability at most $r$ in our model. We can determine the corresponding match length $t_p$ by setting the CDF in Equation \ref{max-of-geom-distributions} to greater than $1-r$ and solving for $t$. We obtain:
+
+\begin{equation}\label{analytic_noise_treshold}
+t_p \geq \frac{\log (1 - (1-r)^{1/n})}{\log p} - 1\;,
+\end{equation}
+For example, for a small genome with $n = 10^6$ distinct $k$-mers,  nucleotide match probability $p = 0.25$ and false positive tolerance $r = 10^{-6}$, we have $t_p \approx 18.9$.
+
+\subsection{\texorpdfstring{Derandomizing $k$-bounded matching statistic vectors}{Derandomizing k-bounded matching statistic vectors}}
+
+
+\begin{figure}[b]
+    \centering
+    \includegraphics[width=1.0\linewidth]{fig/derandomized_MS.drawio.pdf}
+    \caption{Derandomizing the MS vector. The vertical axis is the length of a match (up to the \emph{k}-mer size $k$) ending at a given position in the query (horizontal axis). The black line shows values of the \textit{k}-bounded matching statistics. The dashed grey horizontal line marks the noise threshold $t$. The dotted red line shows the derandomized values.}
+    \label{fig:derandomization}
+\end{figure}
+Using the threshold $t_p$ from Equation (\ref{analytic_noise_treshold}), we \emph{derandomize} $MS$ by replacing match lengths below the threshold $t_p$ with values derived from nearby values. A key fact to understand about the $MS$ vector is that $MS[i]$ is always at most $MS[i-1]+1$. For typical data in practice, the general shape of the $MS$ vector is a mountainscape with slow climbs and sharp falls, interspersed with with noisy valleys below the significant match threshold (see Figure \ref{fig:derandomization}). The idea of derandomization is to extrapolate the climbs backward to eliminate the noisy segments. The process is detailed in Algorithm \ref{alg:derandomized-MS}. After this processing, we can easily read off the lengths of gaps in the matches, as shown in the next section.
+
+\begin{comment}
+    version $d = d_1, \dots, d_N$ of the matching statistics vector $MS$ by iterating over $MS$ in reverse and applying the following procedure on the elements $MS[n] = ms_N, \dots, ms_1$
+\begin{enumerate}
+\item If $MS[n] > t_p$ and $MS[n+1] < MS[n]$,  then $d_n = MS[n]$,
+\item If $MS[n] = k$, then $d_n = k$,
+\item By default $d_n = MS[n+1] - 1$
+\end{enumerate}
+\end{comment}
+
+%TODO ref to alg below
+
+
+
+\begin{algorithm}[t]
+\begin{algorithmic}[1]
+\small
+\Require Matching statistics vector $MS_k[1..n]$, significant match threshold $t_p$ from Equation \ref{analytic_noise_treshold}.
+\Ensure Derandomized MS vector $DMS_k[1..n] = (d_1, \ldots, d_{n})$.
+\State $DMS_k \leftarrow $ Array of length $n$ initialized to zeros
+\State $DMS_k[n] \gets MS_k[n]$
+\For{$i = n-1..1$}
+\If{$MS_k[i] = k$}
+\State $DMS_k[i] \gets k$
+\ElsIf{$MS_k[i] \geq t_p$ and $MS[i+1] > MS[i]$}
+    \State $DMS_k[i] \gets MS_k[i]$
+\Else
+    \State $DMS_k[i] \gets DMS_k[i+1]-1$
+\EndIf
+\EndFor
+%\State \Return $DMS$
+\caption{\small Derandomizing the MS vector} 
+\label{alg:derandomized-MS}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Translating derandomized matching statistics into alignment events}
+ 
+
+
+%Zeros in $d$ mark the first base after end of a match, and negative values denote 0-indexed distance from the last matching base. The key to this simple procedure is reading the matching statistics vector $MS$ in reverse and using the threshold $t_p$ to determine when a new match begins after a gap.
+
+
+The derandomized MS vector can be translated into a character representation of the compatibility between the query and a reference sequence. For example, a single nucleotide substitution or insertion at position $i$ will show up as run from 0 to $k$ in $DMS_k[i..i+k]$. These can be distinguished from deletions and recombinations, which exhibit different kinds of characteristic patterns. All the possible cases are displayed in Figure \ref{fig:translate_cases}. We represent character compatibility events using the following set of symbols:
+\begin{enumerate}
+\item[\textbf{$\tt{M}$}]: Match between query and reference.
+\item[\textbf{-}]: Bases in the query that are not found in the reference.
+\item[\textbf{$\tt{X}$}]: Single base mismatch \textit{or} single base insertion into the query.
+\item[\textbf{$\tt{R}$}]: Two consecutive ${\tt R}$s signify a discontinuity in the alignment. The right ${\tt R}$ is at the start of a $k$-mer that is not adjacent to the last character in the $k$-mer corresponding to the left ${\tt R}$. This implies either a deletion of unknown length in the query, or an insertion of $k$-mers from elsewhere in the reference into the query.
+\end{enumerate}
+Algorithm \ref{alg:tranlating-DMS} shows how these events can be detected with a single pass over the $DMS_k$ array. Figure \ref{fig:translate_cases} shows examples of the distinct cases. Note how these examples illustrate that the procedure is not able to distinguish between a single base insertion and a single base substitution. This problem can be resolved by adding a \textit{refinement} step to our translation, which resolves this conundrum by using the nucleotide sequence of the reference.
+
+\input{translatingDMS}
+\begin{comment}
+The translation $t_n$ for each value in the derandomized MS vector $d_n$ depends on the neighboring values $d_{n - 1}$, $d_{n + 1}$ and the threshold $t_p$. We use the following algorithm to determine the character representation of the events
+    \begin{enumerate}
+\item If $d_n > t_p$ and $d_{n + 1} > 0$ and $d_{n + 1} < t_p$, \\ then $t_n = \text{'R'}$ and $t_{n + 1} = \text{'R'}$.
+\item If $d_n <= 0$, then there is a mismatch in the query and we apply
+    \begin{enumerate}
+    \item If $d_{n + 1} = 1$ and $d_{n - 1} > 0$, then $t_n = \text{{\tt X}}$.
+    \item Else $t_n = \text{'-'}$.
+    \end{enumerate}
+\item By default $t_n = \text{'M'}$
+\end{enumerate}
+\end{comment}
+
+\begin{figure}[t]
+    \centering
+    
+    {\includesvg[width=1.0\linewidth]{fig/kbo_translate_cases.svg}}
+    \caption{Illustration of the results of applying the translation procedure to a derandomized matching statistics vector. Examples in both panels assume \emph{k}-mer size 3 and derandomization threshold $t=2$. MS is short for matching statistics and DMS for derandomized matching statistics.}
+    \label{fig:translate_cases}
+\end{figure}
+
+\subsection{Variant calling using matching statistics}
+
+{\sf kbo} also implements a variant calling algorithm to detect and report all short variants between a pair of sequences: a reference $R$ and  a query $Q$. A variant is defined as a triple $(i, v_r, v_q)$, which means that at location $R[i]$, the string $v_r$ has been replaced with string $v_q$. This framework encompasses all types of short variations: If $v_r$ is empty, the variant is an insertion, and if $v_q$ is empty, the variant is a deletion. If $|v_r| = |v_q| = 1$, we have a single nucleotide substitution. If the lengths of $|v_r|>1$, $|v_q|>1$ and $|v_r| \neq|v_q|$ the variant affects multiple bases and includes substitutions and indels. %Otherwise, the variant is a multi-base substitution.\textcolor{purple}{ Elena: If the length differs, we might also have an indel, no?}
+
+To find variants between the sequences $R$ and $Q$, we first build the SBWT indices of both $R$ and $Q$, and compute the $k$-bounded matching statistics array $MS[1..|Q|]$ of $Q$ against $R$. The idea is to analyze positions where the match length drops from significant to insignificant. A position $i$ is classified as a \emph{significant drop} iff $MS[i-1] \geq t_p$ and $MS[i] < t_p$, where $t_p$ is the significant match threshold derived in Section "\nameref{sec:random-match-model}". %\textcolor{purple}{E: it's not so easy to find section 2.3 since the sections are not numbered. Is $d$ the same as $t_p$? $d$ is the value at position $i$ in DMS...} 
+The position $i-1$ just before the drop is called a \emph{significant peak}.
+
+Each significant peak position $i$ is analyzed by finding the shortest unique significant match nearest to the right of $i$, that is, the smallest $j > i$ such that $MS[j] \geq t_p$ and the longest match ending at $Q[j]$ is a suffix of only one $k$-mer of $R$. This unique match is used as an anchor to resolve the potential variant between $R$ and $Q$. This is done by comparing the $k$-mer $\alpha = Q[j-k+1..j]$ and the unique $k$-mer $\beta$, in the SBWT of $R$, that has suffix equal to $Q[i+1..j]$.
+
+Denoting the length of the longest common suffix of $\alpha$ and $\beta$ with $m$, the potential variant ends just before position $e = k - m + 1$ in both $\alpha$ and $\beta$. To find the variant sequences $v_r$ and $v_q$, we compute the matching statistics $MS^\alpha[1..|\alpha|]$ of $\alpha$ against $R$ and $MS^\beta[1..|\beta|]$ of $\beta$ against $Q$. 
+%\textcolor{purple}{ We defined MS for a query string $Q$ against another sequence $S$ as $MS_k[1..|Q|]$. Here is should be $MS_k[1..|\alpha|]$ and $MS_k[1..|\beta|]$. Else we should redefine MS } 
+The starting points $s_\alpha$ in $\alpha$ and $s_\beta$ in $\beta$ are at the rightmost (if they exist) significant drops of $MS^\alpha$ and $MS^\beta$, respectively. That is, $v_q = \alpha[s_\alpha..e)$ and $v_r = \beta[s_\beta..e)$. However, we must be careful because in case of deletions and insertions, the predicted starting point may fall \emph{after} the predicted ending point (see Fig. \ref{fig:variantcall}, Case 3), or $s$ and $e$ may coincide (Case 2). We define gap($\alpha$) = $e - s_\alpha$ and gap($\beta$) = $e - s_\beta$ (See Fig. \ref{fig:variantcall}). 
+If one or both of these gaps is negative or 0, we have an indel. If gap($\alpha$) $>$  gap($\beta$), we have an insertion in $Q$. On the other hand, if gap($\alpha$) $<$  gap($\beta$), we observe a deletion in $Q$.
+%If one or both of these gaps is negative, the interpretation is that we have a deletion of length $|$gap($\alpha$) - gap($\beta$)$|$, such that the deletion is on the sequence with more negative gap value. \textcolor{purple}{By using reference and query we could clearly mention insertions as well.}
+
+\begin{figure}
+    {\includesvg[width=1.0\linewidth]{fig/kbo_variant_calling.svg}}
+
+\caption{Examples of variant calling outputs with $k=9$.
+The first case is the most basic one: We have a substitution of CTC with AG, which are found in the range $[s..e)$ in each sequence. In the second case, with have an insertion of one character which is not equal to the preceding character in the query, making one of the intervals $[s..e)$ empty, indicating an indel. In the third case, we have an insertion of characters that are equal to the preceding character. In this case, the predicted start and end points cross, making the gaps negative, but the difference in the length of the gaps still gives the length of the insertion. }\label{fig:variantcall}
+\end{figure}
+
+\subsection{Filling gaps in the translated alignment}
+Translated output from {\sf kbo} may contain regions consisting of single or consecutive '-' characters, which we call gaps, that are false negatives. These are primarily caused by multiple changes occurring within an interval shorter than the \emph{k}-mer size, which leads the derandomization algorithm to mark the entire interval as a gap as the matching statistics within the region never exceeds the threshold. If these gaps are short enough that a single \emph{k}-mer overlaps the entire region, variant calling will resolve the true sequence, but for longer gaps a dedicated gap filling algorithm, which we now describe, is required.
+
+We start by defining the \textit{nearest unique context} of a gap. %The nearest unique context $\nu$ is the colexicographic range $\left[l,r\right]$ with size $r - l = 0$ of a \emph{k}-mer $\gamma$ whose suffix matches the characters to the right of the gap. 
+The nearest unique context $\nu$ is the colexicographic range $\left[l,r\right]$ of size 1  ($r=l$) of a single \emph{k}-mer $\gamma$, from the SBWT of the reference, whose suffix matches the characters to the right of the gap. We require suffix matches of at least the derandomization threshold $t_p$ in order to avoid spurious \emph{k}-mers. This implies that $\gamma$ always overlaps at least $t_p$ characters to the right of the gap. The first step in our gap filling algorithm is to search for the nearest unique context and, if it does not exist, the gap is considered unfillable.
+
+If $\gamma$ exists, we attempt to find a sequence $\lambda$ that extends $\gamma$ to the left so that the prefix of $\lambda$ matches the sequence to the left of the gap by $t_p$ characters. We construct $\lambda$ iteratively by prepending each possible character $\left\{ {\tt A,C,G,T}\right\}$ in turn to the concatenated sequence $\lambda_{i - 1} \cdot \gamma$, where $\lambda_0$ is an empty sequence and $\lambda_{i - 1}$ is the concatenated sequence from the previous iteration. At each iteration we check that 1) the first $k$ characters in the extended sequence $\lambda_i$ have a colexicographic range with size $1$ in the SBWT, and 2) only one of the four possible extensions has a colexicographic range with size $1$. If either of these conditions fails before the prefix of $\lambda_i$ matches the sequence left of the gap by $t_p$ characters, we say that a valid extension $\lambda$ does not exist. Note that $\gamma$ may already fulfil these criteria if the gap is shorter than $k - 2t_p$, in which case the valid extension is the empty sequence $\lambda_0$.
+
+If a valid left extension $\lambda$ exists, we extract the subsequence $\delta$ from the concatenated sequence $\lambda \cdot \gamma$ by taking the characters that overlap the gap, $\delta = \left[\left(\lambda \cdot \gamma\right)_{t_p + 1},\dots,\left(\lambda \cdot \gamma\right)_{N - t_p - 1}\right]$ where $N$ is the total size of $\lambda \cdot \gamma$, and apply a series of checks to determine whether to use $\delta$ to fill the gap. The first check is that the size of $\delta$ must equal the size of the gap, meaning there are no insertions or deletions in $\lambda$. The second check is that $\delta$ and $\lambda$ must meet at least one of the following three requirements: 1) $\lambda$ is an empty sequence, or 2) all characters in $\delta$ except $\delta_{t_p + 1}$ and $\delta_{ N - t_p - 1}$ match the reference, or 3) the probability of generating all consecutive matches in $\delta$ is less than $t_p$. We compute 3) using products of the CDF of maximum match lengths (Definition \ref{max-of-geom-distributions}). If $\delta$ passes these checks, we replace the gap characters with the sequence $\delta$.
+
+\subsection{Implementation}
+We provide {\sf kbo} in the form of three software packages written fully in the Rust programming language: kbo\footnote{\url{https://github.com/tmaklin/kbo}} contains the implementations of our algorithms and is intended for usage in other programs, kbo-cli\footnote{\url{https://github.com/tmaklin/kbo-cli}} provides a command-line client, and kbo-gui\footnote{\url{https://github.com/tmaklin/kbo-gui}} is a Rust-to-WebAssembly graphical user interface that runs in a browser with no server-side processing or data transfer. Both the command-line and graphical user interfaces provide full access to all features of {\sf kbo}. An overview of the operation of {\sf kbo} is given in Figure \ref{fig:kbo-overview}.
+
+\begin{figure*}[!t]%
+\centering
+\includegraphics{fig/kbo_overview.pdf}
+\caption{Overview of the three main algorithms in {\sf kbo}: find, call, and map. The figure shows which parts of the SBWT and {\sf kbo} core libraries each algorithm makes use of and illustrates example inputs and outputs to and from the user interface implementations. This figure was created with \emph{k}-mer size $3$ and derandomization threshold $2$. In the translated output, 'D' denotes a deletion, 'I' an insertion, and 'X' a single nucleotide polymorphism. In the translated output and the Alignment box sequences, '-' denotes base pairs that are not found in the reference.}\label{fig:kbo-overview}
+\end{figure*}
+
+\section{Use cases}
+We demonstrate {\sf kbo} on three common bacterial genomics tasks and present results for both accuracy and compute resource usage. These demonstrations were conducted using the command-line interface (kbo-cli v0.2.0) running on a 2021 Dell XPS 13 laptop with an Intel i7-1165G7 4-core processor and 16GB RAM. All tools were run with the default parameters unless otherwise stated.
+
+\subsection{Variant calling with 'kbo call'}
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{fig/variant_calling_resource_consumption.pdf}
+    \caption{Resource consumption in variant calling for the four tested methods \kbo, MUMmer4, Shred, and SKA. Panel a) shows a boxplot of time taken to process each sample. Panel b) the peak memory usage during each run, and Panel c) the temporary disk requirement. The thick lines denote the median and the whiskers the 25\% and 75\% quantiles. In panels a) and c) the vertical axis has been cut to highlight the differences between Shred and the other methods. }
+    \label{fig:vc-resource-usage}
+\end{figure}
+
+\begin{table}[]
+\centering
+\begin{tabular}{lrrrrr}
+Method & TP  & FN  & FP   & Sensitivity & Precision \\
+\hline
+\kbo    & 782 & 0   & 1630 & 1.00    & 0.32  \\
+MUMmer4 & 782 & 0   & 4669 & 1.00    & 0.14  \\
+Shred  & 782 & 0   & 4001 & 1.00    & 0.16  \\
+SKA    & 374 & 408 & 7431 & 0.48    & 0.05
+\end{tabular}
+\caption{Results from four tested methods in resolving single-nucleotide substitutions. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.}
+\label{vc-snps}
+\end{table}
+\begin{table}[]
+\centering
+\begin{tabular}{lrrrrr}
+Method & TP & FN & FP  & Sensitivity & Precision \\
+\hline
+\kbo    & 68 & 0  & 190 & 1.00    & 0.26  \\
+MUMmer4 & 68 & 0  & 719 & 1.00    & 0.09  \\
+Shred  & 68 & 0  & 699 & 1.00    & 0.09  
+\end{tabular}
+\caption{Results from three tested methods in resolving insertions. SKA does not resolve insertions and deletions so it is omitted. The ground-truth was determined with read-based variant calling against a hybrid-assembled reference genome. Values are rounded to 2 most significant digits.}
+\label{vc-indels}
+\end{table}
+
+We benchmarked the variant calling algorithm in {\sf kbo} by reproducing an experiment conducted in an earlier study \cite{wick2025reads}. Briefly, in that study, seven very closely related (less than 10 nucleotides difference) \textit{Staphylococcus aureus} assemblies were created with different assemblers and sequencing technologies, including short-read and long-read sequencing of the same isolates. The study compared variant calls obtained from assemblies only against the gold standard read-based calls on a hybrid-assembled 2.9Mb long reference genome. We compare the variant calls from {\sf kbo} against calls generated using multiple different approaches: 1) based on genome alignment (MUMmer4\cite{marccais2018mummer4}), 2) a pipeline converting the assemblies into pseudo reads using wgsim, aligning them against the reference with BWA-MEM \cite{li2013aligning}, and calling the variants with freebayes \cite{garrison2012haplotype} (called Shred, because the pipeline shreds the assemblies into pseudo-reads using wgsim), and 3) a split \emph{k}-mer based approach (SKA \cite{derelle2024seamless}). We used default parameters for all three tools and $k = 51$ and $t_p = 10^{-8}$ for {\sf kbo}.
+
+Our results (Tables \ref{vc-snps} and \ref{vc-indels}) show that, like MUMmer4 and Shred, {\sf kbo} achieves perfect sensitivity and successfully calls all SNVs and indels that are present in the gold standard. When measured by precision, {\sf kbo} is markedly better at reporting fewer false positives, achieving two times better precision in SNV calling and three times better in resolving indels. Supplementary Figure 1 shows how the results from {\sf kbo} change when the \emph{k}-mer size and the maximum error probability parameters are varied.
+
+By resource usage {\sf kbo} is the fastest method, taking an average of 1.6s seconds to process a single pairwise comparison (Fig. \ref{fig:vc-resource-usage}a). The peak memory usage of {\sf kbo} is comparable to the other \emph{k}-mer based method, SKA, requiring 401MB per comparison on average (Fig. \ref{fig:vc-resource-usage}b). Since {\sf kbo} performs all operations fully in-memory, the tool is the only one of the four tested that requires no temporary disk space (Fig. \ref{fig:vc-resource-usage}c). Overall the resource usage of {\sf kbo} is mainly determined by the \emph{k}-mer size parameter. Supplementary Figure 2 shows how the runtime and memory usage change with different values of \emph{k}.
+
+\subsection{Gene finding with 'kbo find'}
+The 'find' command in {\sf kbo} can be used to find the coordinates of some reference sequence(s) of interest in a query. In this example we demonstrate a use case for 'find' in locating 19 genes (total 50,000 bases long) belonging to the pks pathogenicity island in 1999 \textit{E. coli} chromosome sequences (avg. length 4.63Mb) from the Norwegian surveillance programme on resistant microbes (NORM) collection \cite{gladstone2021emergence, arredondo2023escherichia}.
+
+The ground truth was generated by annotating the 1999 assemblies with bakta \cite{schwengers2021bakta}. Reference sequences for the pks island genes were extracted from the \textit{E. coli} IHE3034 strain (\href{https://www.ebi.ac.uk/ena/browser/view/GCA_000025745.1}{ASM2574v1A}) \cite{moriel2010identification}. Assemblies were processed in four parallel processes with a single thread each using the GNU parallel tool \cite{tange_2024_13826092}, taking a total of 509 seconds (0.25s per assembly) and 195MB peak memory. For comparison, running the same analysis with blast+ \cite{camacho2009blast+} takes 364 seconds (0.18s per assembly) and 189MB peak memory. Our tool was able to identify the exact same regions as bakta in 894 out of 934 assemblies. In the remaining 39 assemblies, the average difference between alignments reported by {\sf kbo} and the gene annotations from bakta was 5 bases out of the total 50 000.
+
+The default mode for 'find' does not report the name of the reference sequence (gene or contig, for example) in which an alignment was found due to limitations of the matching statistics algorithm. If the names are required, we implement a detailed mode that indexes each sequence separately, overcoming this problem. The detailed mode is significantly slower, taking a total of 6540 seconds (3.3s per assembly) and 1417MB peak memory to run the same experiment. We leave a more efficient algorithm to future work.
+
+\subsection{Reference-based alignment with 'kbo map'}
+
+The final operation supported by {\sf kbo} is reference-based alignment of two assemblies, where the nucleotides in a query sequence are mapped relative to a reference sequence. The results of this procedure are useful in, for example, phylogenetic inference when the original sequencing reads are not available or the number of queries is prohibitively large for storing the read data. We created a benchmark for 'kbo map' by extracting the short-read sequencing data and 112 fully assembled chromosome sequences from \textit{E. coli} sequence type (ST) ST131 isolates in the previously mentioned NORM collection \cite{gladstone2021emergence,arredondo2023escherichia}. The ground truth was inferred by selecting a random hybrid assembly as the reference, aligning paired-end short-read sequencing reads from the other isolates against it using BWA-MEM2 \cite{vasimuddin2019efficient}, and using samtools \cite{10.1093/gigascience/giab008} to convert the alignment into a consensus sequence.
+
+\begin{table}[]
+\centering
+\begin{tabular}{lrrr}
+Method & 25\%-q.  & Median  & 75\%-q. \\
+\hline
+\kbo    & 29 690 & 73 814   & 84 420  \\
+SKA    & 78 547 & 104 990 & 117 813 \\
+Snippy  & 124 386 & 149 894 & 159 206  \\
+\end{tabular}
+\caption{Absolute errors (base pairs) in reference-based alignment of 112 \textit{E. coli} chromosome sequences across \kbo, SKA and Snippy.}
+\label{map-absolute-error}
+\end{table}
+\begin{table}[]
+\centering
+\begin{tabular}{lrrr}
+Method & 25\%-q.  & Median  & 75\%-q. \\
+\hline
+\kbo    & 0.6\% & 1.5\% & 1.7\%  \\
+SKA    & 1.6\% & 2.1\% & 2.4\% \\
+Snippy  & 2.5\% & 3.0\%   & 3.2\%  \\
+\end{tabular}
+\caption{Relative errors (\% of reference length) in reference-based alignment of 112 \textit{E. coli} chromosome sequences across \kbo, SKA and Snippy. The reference sequence length was 5,025,582 base pairs.}
+\label{map-relative-error}
+\end{table}
+
+We compared 'kbo map', SKA\cite{derelle2024seamless}, and Snippy\cite{seemann2015snippy} to the ground truth by measuring the results ({\tt A, C, G, T,} and ambiguous or gap) in the alignment that agree or disagree between the tested tools and the ground truth. In the benchmarks, we used assemblies as the inputs to all tools. Our results show that all three tools have comparable performance, with {\sf kbo} being slightly better when measured by median errors (Tables \ref{map-absolute-error}, \ref{map-relative-error}). Figure \ref{fig:map-by-kmer-size}c shows how the results from {\sf kbo} change when the \emph{k}-mer size and error probability parameters are varied.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{kbo_parameter_comparison.pdf}
+    \caption{Resource usage and relative error of 'kbo map' in reference-based alignment of 112 \textit{E. coli} ST131 chromosome sequences with different parameter configurations. Panel a) shows a boxplot of runtimes of each sequence, Panel b) peak memory usage, and Panel c) relative error measured as number of incorrect base pairs out of the 5 025 582 reference base pairs.}
+    \label{fig:map-by-kmer-size}
+\end{figure}
+
+
+In resource usage {\sf kbo} and SKA were comparable, with {\sf kbo} total 624 seconds (mean 5.7s per assembly) and 655MB peak memory to process the benchmark and SKA 669 seconds (6.0s per assembly) and 830MB peak memory. The slowest tool was Snippy which took 2 361 seconds (21.1s per assembly) but had a lower peak memory consumption at 385MB. Additionally, SKA and Snippy used a maximum of 29MB and 52MB temporary disk space, respectively, during the benchmark. The resource usage of {\sf kbo} is primarily determined by the \emph{k}-mer size parameter (Figures \ref{fig:map-by-kmer-size}a and \ref{fig:map-by-kmer-size}b) and whether further refinmenet with the gap filling and variant calling algorithms are used. Taken together, {\sf kbo} was the fastest and most accurate method in this benchmark.
+
+\subsection{Running {\kbo} in a browser}
+In addition to the command-line client, we also provide a WebAssembly version of {\sf kbo} that runs entirely in the browser and does not send any user data to a remote server. The web version of {\sf kbo} allows users without command-line familiarity to access the tool on any device that with support for a modern browser and modest compute power. Thanks to the frugal resource usage of {\sf kbo}, the web version supports all functionality provided by the command-line client and can be used to perform any of the analyses presented in this paper. A demonstration of the web version is available online\footnote{\url{https://maklin.fi/kbo}} and can easily be deployed on any web server that supports serving WebAssembly files.
+
+\section{Discussion}
+
+Plain \emph{k}-mer matching methods typically do not support retrieval of the coordinates of the matches. We sidestepped this problem by augmenting \emph{k}-mer matching on the SBWT \cite{alanko2023small} with \emph{k}-bounded matching statistics \cite{alanko2023longest,alanko2024finimizers} and indexing one sequence while streaming the queries from the other, allowing us to transform the matching results into a format where alignment locations can be inferred with high accuracy. Our results show that in addition to being competitive with other methods in accuracy, our approach retains the attractive lookup speed enabled by the specialized data structures for indexing \emph{k}-mers, making it a novel and practically feasible alternative to existing local alignment methods.
+
+One disadvantage of our method is the comparatively high memory usage, especially for large values of \emph{k}, required for constructing the \emph{k}-mer index to perform queries. This issue affects most \emph{k}-mer indexing methods, as the index size is in some way proportional to the number of unique \emph{k}-mers in the input. Index construction algorithms often rely on streaming from temporary disk space to reduce the space usage. We have opted for indexing fully in-memory in order to enable the browser implementation and make our methods better suited for high-performance computing environments, where disk throughput is a limiting factor for parallelisation.
+
+The other future area of improvement is extending matching statistic computation to support coloured index structures, where each \emph{k}-mer in the index is accompanied by a color that denotes its sequence of origin. Storing distinct sequences in this manner would enable efficient indexing of many closely related sequences using color set compression and allow developing {\sf kbo} towards aligning sequencing reads against large reference collections where it is important to know which targets the read aligned against. The SBWT data structure is easily augmented with color information (witness the Themisto pseudoalignment tool~\cite{alanko2023themisto}), but an algorithm for colored matching statistics remains an open problem. We leave support for sequencing read alignment and colored matching statistics to future work.
+
+To our knowledge, {\sf kbo} is the first sequence aligner that compiles to WebAssembly and allows running all features of the tool in a browser including using custom indexes. Web tools have found wide adoption among applied researchers but they remain difficult to customise and require server-side processing, which comes with privacy and long-term support concerns. Using WebAssembly alleviates all of these issues, as the codebase becomes much simpler without a separate client-server model and no data transfer taking place beyond serving the executable to the user. We have made the source code for all parts of our implementation freely available and expect that this will facilitate future implementations of customised analysis pipelines in a manner that is accessible to both non-experts and bioinformaticians alike.
+
+
+\section{Code availability}
+The Rust library, command-line interface, and graphical user interface implementing the methods described here are all freely available from GitHub \url{https://github.com/tmaklin/kbo} and Codeberg \url{https://codeberg.org/themaklin/kbo} under a MIT and Apache 2.0 dual license. Code for reproducing the benchmarking results is available from Zenodo \url{https://doi.org/10.5281/zenodo.15321495}.
+
+\section{Competing interests}
+No competing interest is declared.
+
+\section{Author contributions statement}
+T.M. designed the core kbo algorithms and implemented the kbo, kbo-cli, and kbo-gui Rust libraries. J.N.A. implemented the SBWT Rust library and derived the random match distribution. J.N.A. and E.B. designed and implemented the variant calling algorithm. T.M., J.N.A, E.B., and S.J.P. investigated the relationship between \emph{k}-bounded matching statistics and local alignments. S.J.P. obtained funding and supervised the study. All authors contributed to the writing, reviewing, and editing of the manuscript.
+
+\section{Acknowledgments}
+This work was supported in part by the Research Council of Finland via grants 339070 and 351150. T.M. was partially funded by Research Council of Norway, grant no. 299941.
+
+%\input{fig/figure_translate_cases_a}
+%\input{fig/figure_translate_cases_b}
+
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+
+%USE THE BELOW OPTIONS IN CASE YOU NEED AUTHOR YEAR FORMAT.
+%\bibliographystyle{abbrvnat}
+%\bibliography{reference}
+
+\end{document}
