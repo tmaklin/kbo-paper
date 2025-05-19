@@ -1,0 +1,46 @@
+FIGURES:
+
+
+- figure 4: e and s disappeared.
+
+- figure 6: Elena: I'm being very picky but could "c) Disk" be written a bit more to the right? Not for the preprint
+
+
+
+
+
+NEW April
+- Define a standard for MS and DMS
+- $t_p$ or just $t$?
+- check section "Filling gaps in the translated alignment"
+- add a description of every method "find, call, variant calling" at the end of introduction
+
+
+
+
+ ---------------------------------------
+DONE:
+- figure 3: E: I would suggest replacing blue and purple as they are not color blind-friendly. Maybe we could color CGG and underline TTT. [DONE]
+
+- figure 4 should have the same style as figure 3 [DONE]
+
+- figure5: E: 1) I personally don't like the last red box with the sequences just one on top of the other. If we are showing an alignment we should shift the sequences (e.g. have a gap below the deleted AA). These have the same length by chance. 
+2) Green and red are unfortunately not color blind-friendly :( [DONE]
+
+- replace SNP with SNV [DONE]
+
+1. In the Methods section there are two enumerates that might look better formatted as pseudocode. Can we change them? [DONE]
+
+2. Would it be possible to add the MS vector and t to Figure 3? We believe it would make it easier to understand how dMS is derived. [DONE]
+
+3. SNP (single nucleotide polymorphism) can be where one base is changed for another or when an individual base is inserted or deleted from the sequence. It would be preferable to avoid using the term SNP, if possible, and just stick with single nucleotide substitution if that is what we want here, to distinguish between that and an insertion. Your thoughts? TM: Re the point about polymorphism vs substitution, your comment reminds me that this is relevant in the algorithm: if the refinement step mentioned has not been run, then the algorithm can't resolve 1bp insertion or substitution vs. substitution, so should be careful here. I agree SNP is not the best term in general. [DONE?]
+
+TM email 24, Feb: 
+Looking at the overleaf the big things to do are:
+- Finish description of the algorithm and revise the parts that are already there, they are a bit unclear.
+- Add some simple demonstrations and quick benchmarks vs other algorithms (I have designed and run these, need to add them to the text).
+- Finish the browser GUI, it currently has all the functionality of the CLI but needs means to export the output and some cleaning up to make it less intimidating.
+- Write discussion and revise the introduction.
+- Polish the figures.
+
+From my perspective contributions to the introduction and the discussion would be valuable, as I don't know the algorithmic bioinformatics literature very well. Any feedback on the code / documentation / cli and gui would also be helpful but this is not super relevant for getting the paper submitted.
